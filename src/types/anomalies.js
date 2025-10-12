@@ -37,5 +37,8 @@ export const anomalies = [
   },
   {
     id: 'mojibake'
+  },
+  {
+    id: 'comment'
   }
 ]

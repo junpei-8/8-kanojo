@@ -2,7 +2,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 // x秒ごとにy文字の文字数を文字化けさせる。(上限10回)
-// このスコープを丸ごとコピペして `import { ref, onMounted, onUnmounted } from 'vue'` を追加して頂ければ動作するはずです
 let textCorruptionIntervalId = null
 
 function startTextCorruption(intervalSec = 3, countPer = 3) {
