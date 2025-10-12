@@ -1,5 +1,5 @@
-import AnomalyText from '../components/AnomalyText.vue'
-import AnomalyColor from '../components/AnomalyColor.vue'
+import AnomalyText from '../fragments/anomalies/AnomalyText.vue'
+import AnomalyColor from '../fragments/anomalies/AnomalyColor.vue'
 
 /**
  * @typedef {Object} AnomalyConfig
