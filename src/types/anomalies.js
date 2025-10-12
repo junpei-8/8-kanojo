@@ -38,5 +38,8 @@ export const anomalies = [
   {
     id: 'windowSpam',
     component: AnomalyWindowSpam
+  },
+  {
+    id: 'otherKanojos'
   }
 ]

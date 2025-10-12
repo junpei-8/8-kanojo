@@ -6,6 +6,7 @@ import OpeningScene from './fragments/scenes/OpeningScene.vue'
 import EndingScene from './fragments/scenes/EndingScene.vue'
 import GameButtons from './fragments/sections/GameButtons.vue'
 import KeyVisual from './fragments/sections/KeyVisual.vue'
+import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
 import GameFooter from './fragments/sections/GameFooter.vue'
 
 const { handleAnswer, startRound } = useGameLogic()
@@ -72,8 +73,13 @@ function onProceed() {
   <div v-if="gameState.gameStarted">
     <!-- ゲーム画面 -->
     <div class="game-content">
+      {{ gameState.currentAnomaly }}
 
       <KeyVisual />
+
+      <OtherKanojoSection
+        :is-anomaly="gameState.currentAnomaly.id === 'otherKanojos'"
+      />
 
       <GameFooter
         :is-last-stage="isLastStage"
