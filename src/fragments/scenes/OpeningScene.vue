@@ -1,8 +1,12 @@
 <script setup>
-import { useGameLogic } from '../composables/use-game-logic.js'
+import { useGameLogic } from '../../composables/use-game-logic.js'
 
 const { startGame } = useGameLogic()
 
+/**
+ * ゲームを開始する
+ * スタートボタンクリック時に呼ばれる
+ */
 function onStart() {
   startGame()
 }

@@ -1,8 +1,26 @@
 <script setup>
 import { ref } from 'vue'
 
+/**
+ * Props定義
+ * @property {string} [mode] - 異変のモード（将来の拡張用）
+ */
+defineProps({
+  mode: {
+    type: String,
+    default: ''
+  }
+})
+
+/**
+ * 広告バナーが展開されているかどうか
+ * @type {import('vue').Ref<boolean>}
+ */
 const isExpanded = ref(false)
 
+/**
+ * 広告バナーの展開状態を切り替える
+ */
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
 }

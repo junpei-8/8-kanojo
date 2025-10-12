@@ -9,7 +9,9 @@ import { ref } from 'vue'
  * @property {boolean} isCleared
  */
 
-/** @type {import('vue').Ref<GameState>} */
+/** 
+ * @type {import('vue').Ref<GameState>} 
+ */
 export const gameState = ref({
   gameStarted: false,
   currentStage: 0,

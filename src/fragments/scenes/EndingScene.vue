@@ -1,9 +1,13 @@
 <script setup>
-import { resetGame } from '../store/game-store.js'
-import { useGameLogic } from '../composables/use-game-logic.js'
+import { resetGame } from '../../store/game-store.js'
+import { useGameLogic } from '../../composables/use-game-logic.js'
 
 const { startRound } = useGameLogic()
 
+/**
+ * ゲームをリスタートする
+ * ゲーム状態をリセットして新しいラウンドを開始する
+ */
 function restart() {
   resetGame()
   startRound()

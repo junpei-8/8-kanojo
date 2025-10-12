@@ -1,16 +1,60 @@
 <script setup>
-import { gameState } from './store/game-store.js'
+import { computed } from 'vue'
+import { gameState, resetGame } from './store/game-store.js'
 import { useGameLogic } from './composables/use-game-logic.js'
 import OpeningScene from './fragments/scenes/OpeningScene.vue'
 import EndingScene from './fragments/scenes/EndingScene.vue'
+import GameButtons from './fragments/GameButtons.vue'
 
-const { currentAnomalyComponent, handleAnswer } = useGameLogic()
+const { currentAnomalyComponent, handleAnswer, startRound } = useGameLogic()
 
+/**
+ * 最終ステージ（8回目）かどうか。
+ *
+ * @type {import('vue').ComputedRef<boolean>}
+ */
+const isLastStage = computed(() => gameState.value.currentStage === 7)
+
+/**
+ * ボタンが避けるモードかどうか（buttonDodge異変時）
+ *
+ * @type {import('vue').ComputedRef<boolean>}
+ */
+const dodgeMode = computed(() => gameState.value.currentAnomaly === 'buttonDodge')
+
+/**
+ * 戻るボタンのクリックハンドラー。
+ * ページトップにスクロールしてから処理を実行。
+ */
 function onGoBack() {
+  window.scrollTo(0, 0)
   handleAnswer(true)
 }
 
+/**
+ * 進むボタンのクリックハンドラー。
+ * windowSpam異変時は特殊処理を実行。
+ * それ以外はページトップにスクロールしてから処理を実行。
+ */
 function onProceed() {
+  // windowSpam異変の場合、confirmを表示してOKならリセット
+  if (gameState.value.currentAnomaly === 'windowSpam') {
+    if (confirm('本当に進みますか？')) {
+      if (confirm('確認：本当に解約手続きを進めますか？')) {
+        // OKを押した = 失敗（異変があるのに進んだ）
+        window.scrollTo(0, 0)
+        resetGame()
+        startRound()
+        return
+      }
+    }
+
+    // キャンセルした場合は何もしない（正解は「戻る」ボタン）
+    return
+  }
+
+  // 通常の処理
+  window.scrollTo(0, 0)
   handleAnswer(false)
 }
 </script>
@@ -66,14 +110,12 @@ function onProceed() {
         </div>
 
         <!-- ボタン -->
-        <div class="button-group">
-          <button @click="onGoBack" class="action-button back-button">
-            ← 戻る
-          </button>
-          <button @click="onProceed" class="action-button proceed-button">
-            進む →
-          </button>
-        </div>
+        <GameButtons
+          :is-last-stage="isLastStage"
+          :dodge-mode="dodgeMode"
+          @go-back="onGoBack"
+          @proceed="onProceed"
+        />
       </div>
     </div>
   </div>
@@ -171,45 +213,6 @@ function onProceed() {
   line-height: 1.6;
 }
 
-.button-group {
-  display: flex;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-.action-button {
-  flex: 1;
-  padding: 15px;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.back-button {
-  background: #6c757d;
-  color: white;
-}
-
-.back-button:hover {
-  background: #5a6268;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
-
-.proceed-button {
-  background: #ff6b9d;
-  color: white;
-}
-
-.proceed-button:hover {
-  background: #ff5a8d;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
-}
-
 /* レスポンシブ対応 */
 @media (max-width: 640px) {
   .cancel-form {
@@ -218,10 +221,6 @@ function onProceed() {
 
   .form-title {
     font-size: 20px;
-  }
-
-  .button-group {
-    flex-direction: column;
   }
 }
 </style>

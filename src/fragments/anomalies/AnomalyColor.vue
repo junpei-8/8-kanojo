@@ -1,5 +1,16 @@
 <script setup>
-// 色異変: 背景色を通常と異なる色に変える
+/**
+ * 色異変: 背景色を通常と異なる色に変える
+ *
+ * Props:
+ * @property {string} [mode] - 異変のモード（将来の拡張用）
+ */
+defineProps({
+  mode: {
+    type: String,
+    default: ''
+  }
+})
 </script>
 
 <template>
