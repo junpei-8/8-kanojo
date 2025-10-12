@@ -7,10 +7,10 @@ import EndingOverlay from './components/EndingOverlay.vue'
 </script>
 
 <template>
-  <AdBanner />
+  <!-- <AdBanner />
   <CancelPage v-if="gameState.gameStarted" />
-  <OpeningOverlay v-if="!gameState.gameStarted" />
-  <EndingOverlay v-if="gameState.isCleared" />
+  <OpeningOverlay v-if="!gameState.gameStarted" /> -->
+  <EndingOverlay />
 </template>
 
 <style scoped>
