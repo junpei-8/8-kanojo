@@ -27,18 +27,18 @@ export const anomalies = [
     id: 'windowSpam',
   },
   {
-    id: 'otherKanojos'
+    id: 'otherKanojos',
   },
   {
-    id: 'calling'
+    id: 'calling',
   },
   {
-    id: 'broken'
+    id: 'broken',
   },
   {
-    id: 'mojibake'
+    id: 'mojibake',
   },
   {
-    id: 'comment'
-  }
-]
+    id: 'comment',
+  },
+];

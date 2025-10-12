@@ -1,32 +1,37 @@
 <script setup>
-import { ref, watch } from 'vue'
-const selectedReasons = ref([])
+import { ref, watch } from 'vue';
+const selectedReasons = ref([]);
 
 const handleCheckboxChange = (event) => {
-  const value = event.target.value
+  const value = event.target.value;
   if (event.target.checked) {
-    selectedReasons.value.push(value)
+    selectedReasons.value.push(value);
   } else {
-    const index = selectedReasons.value.indexOf(value)
+    const index = selectedReasons.value.indexOf(value);
     if (index > -1) {
-      selectedReasons.value.splice(index, 1)
+      selectedReasons.value.splice(index, 1);
     }
   }
-}
+};
 
-watch(selectedReasons, (newValue) => {
-  if (newValue.length >= 3) {
-    window.location.href = '/'
-  }
-}, { deep: true })
+watch(
+  selectedReasons,
+  (newValue) => {
+    if (newValue.length >= 3) {
+      window.location.href = '/';
+    }
+  },
+  { deep: true },
+);
 </script>
 
 <template>
   <div class="container">
     <div class="lunch-box">
       <div class="box">
-        <p>これまでのデートの回数は9回です。<br>
-        あと一回のデートで手作り弁当をプレゼント！
+        <p>
+          これまでのデートの回数は9回です。<br />
+          あと一回のデートで手作り弁当をプレゼント！
         </p>
       </div>
     </div>
@@ -34,39 +39,80 @@ watch(selectedReasons, (newValue) => {
       <form action="/cancel" method="post">
         <div class="cancel-reason-item">
           <label for="cancel-reason-1">
-            <input type="checkbox" id="cancel-reason-1" name="cancel-reason" value="cast-dissatisfaction" @change="handleCheckboxChange">担当のキャスト(彼女役)に満足ができなかった
+            <input
+              type="checkbox"
+              id="cancel-reason-1"
+              name="cancel-reason"
+              value="cast-dissatisfaction"
+              @change="handleCheckboxChange"
+            />担当のキャスト(彼女役)に満足ができなかった
           </label>
         </div>
         <div class="cancel-reason-item">
           <label for="cancel-reason-2">
-            <input type="checkbox" id="cancel-reason-2" name="cancel-reason" value="service-dissatisfaction" @change="handleCheckboxChange">対応・接客が期待と違った
+            <input
+              type="checkbox"
+              id="cancel-reason-2"
+              name="cancel-reason"
+              value="service-dissatisfaction"
+              @change="handleCheckboxChange"
+            />対応・接客が期待と違った
           </label>
         </div>
         <div class="cancel-reason-item">
           <label for="cancel-reason-3">
-            <input type="checkbox" id="cancel-reason-3" name="cancel-reason" value="conversation-mismatch" @change="handleCheckboxChange">会話や雰囲気が合わなかった
+            <input
+              type="checkbox"
+              id="cancel-reason-3"
+              name="cancel-reason"
+              value="conversation-mismatch"
+              @change="handleCheckboxChange"
+            />会話や雰囲気が合わなかった
           </label>
         </div>
         <div class="cancel-reason-item">
           <label for="cancel-reason-4">
-            <input type="checkbox" id="cancel-reason-4" name="cancel-reason" value="staff-dissatisfaction" @change="handleCheckboxChange">スタッフ(運営側)の対応に不満があった
+            <input
+              type="checkbox"
+              id="cancel-reason-4"
+              name="cancel-reason"
+              value="staff-dissatisfaction"
+              @change="handleCheckboxChange"
+            />スタッフ(運営側)の対応に不満があった
           </label>
         </div>
         <div class="cancel-reason-item">
           <label for="cancel-reason-5">
-            <input type="checkbox" id="cancel-reason-5" name="cancel-reason" value="price-high" @change="handleCheckboxChange">料金が高いと感じた
+            <input
+              type="checkbox"
+              id="cancel-reason-5"
+              name="cancel-reason"
+              value="price-high"
+              @change="handleCheckboxChange"
+            />料金が高いと感じた
           </label>
         </div>
         <div class="cancel-reason-item">
           <label for="cancel-reason-6">
-            <input type="checkbox" id="cancel-reason-6" name="cancel-reason" value="option-price-high" @change="handleCheckboxChange">オプション費用が高い
+            <input
+              type="checkbox"
+              id="cancel-reason-6"
+              name="cancel-reason"
+              value="option-price-high"
+              @change="handleCheckboxChange"
+            />オプション費用が高い
           </label>
         </div>
         <div class="cancel-reason-item">
           <label for="cancel-reason-7">
             <p>その他</p>
           </label>
-            <textarea id="cancel-reason-7" name="cancel-reason" rows="10" cols="80"></textarea>
+          <textarea
+            id="cancel-reason-7"
+            name="cancel-reason"
+            rows="10"
+            cols="80"
+          ></textarea>
         </div>
       </form>
     </div>
@@ -118,7 +164,7 @@ button {
   cursor: pointer;
 }
 
-.cancel-reason-item input[type="checkbox"] {
+.cancel-reason-item input[type='checkbox'] {
   margin-right: 10px;
   flex-shrink: 0;
 }
@@ -126,7 +172,7 @@ button {
 .box {
   width: 800px;
   height: 100px;
-  background-color: #FF99FF;
+  background-color: #ff99ff;
   border: 1px solid #000;
   border-radius: 10px;
   align-items: center;
@@ -138,13 +184,13 @@ button {
 
 @keyframes blink {
   0% {
-    background-color: #FF99FF;
+    background-color: #ff99ff;
   }
   50% {
-    background-color: #FFB3FF;
+    background-color: #ffb3ff;
   }
   100% {
-    background-color: #FF99FF;
+    background-color: #ff99ff;
   }
 }
 </style>

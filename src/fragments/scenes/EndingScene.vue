@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
 import GirlfriendEndingImage1 from '../../assets/girlfriend/ending-1.png';
 import GirlfriendEndingImage2 from '../../assets/girlfriend/ending-2.png';
 
@@ -13,21 +13,31 @@ const TEXTS = [
   '無意識に下唇を噛んでいる自分に気付き嫌気がさした。\nわかっている、俺への対応は嘘で虚像に過ぎないことぐらいは、、、',
   'もう俺は決別したんだ、レンタルではない本当に自分のことに\n向き合ってくれる恋人をつくるために、、、',
   'ありがとうしずこ、君と一緒にいた時間はとても楽しかった、\n決してお金も時間も無駄ではなかった俺は強がりではなく思っている',
-  '小さく俺はそう呟いて、俺には似つかわしくないこの街を後にした、、、'
-]
+  '小さく俺はそう呟いて、俺には似つかわしくないこの街を後にした、、、',
+];
 
-const currentIndex = ref(0)
-const currentText = computed(() => TEXTS[currentIndex.value])
+const currentIndex = ref(0);
+const currentText = computed(() => TEXTS[currentIndex.value]);
 
 const next = () => {
-  currentIndex.value = currentIndex.value + 1
-}
+  currentIndex.value = currentIndex.value + 1;
+};
 </script>
 
 <template>
   <div class="ending-overlay" @click="next">
-    <img class="photo" :src="GirlfriendEndingImage1" alt="" :data-show="currentIndex >=3">
-    <img class="photo" :src="GirlfriendEndingImage2" alt="" :data-show="currentIndex >=TEXTS.length">
+    <img
+      class="photo"
+      :src="GirlfriendEndingImage1"
+      alt=""
+      :data-show="currentIndex >= 3"
+    />
+    <img
+      class="photo"
+      :src="GirlfriendEndingImage2"
+      alt=""
+      :data-show="currentIndex >= TEXTS.length"
+    />
     <div class="talk-box" v-if="currentText">
       {{ currentText }}
     </div>
@@ -70,7 +80,7 @@ const next = () => {
   height: 100vh;
   opacity: 0;
 }
-.photo[data-show="true"] {
+.photo[data-show='true'] {
   opacity: 1;
   transition: opacity 1s ease-in;
 }

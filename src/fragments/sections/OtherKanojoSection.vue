@@ -4,8 +4,8 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 const props = defineProps({
   isAnomaly: {
     type: Boolean,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const images = [
@@ -29,14 +29,14 @@ const lowSpeed = 1; // 動作開始フェーズの低速
 
 let currentSpeed = 0;
 
-let phase = 'accel';   // 'accel', 'stop', 'wait', 'startMove'
+let phase = 'accel'; // 'accel', 'stop', 'wait', 'startMove'
 let phaseFrame = 0;
 
 // フェーズの長さ（60fps換算）
 // ここをpropsでなんとか直す
-const accelDuration = 105;    // 1.75秒
-const stopDuration = 15;     // 0.25秒（揺れ付き停止）
-const waitDuration = 90;     // 1.5秒（停止完全待機）
+const accelDuration = 105; // 1.75秒
+const stopDuration = 15; // 0.25秒（揺れ付き停止）
+const waitDuration = 90; // 1.5秒（停止完全待機）
 const startMoveDuration = 150; // 2.5秒（低速移動フェーズ）
 
 function easeIn(t) {
@@ -50,7 +50,7 @@ function easeOut(t) {
 function animate() {
   phaseFrame++;
 
-  switch(phase) {
+  switch (phase) {
     case 'accel': {
       let progress = phaseFrame / accelDuration;
       if (progress > 1) progress = 1;
@@ -119,14 +119,30 @@ onBeforeUnmount(() => {
   <p class="highlight">もう一度チャンスをください</p>
   <p class="highlight">本サービスには他にもたくさんの彼女がいます！</p>
 
-  <div v-if="props.isAnomaly" class="slider-container" :style="{ transform: `translateY(${yOffset}px)` }">
+  <div
+    v-if="props.isAnomaly"
+    class="slider-container"
+    :style="{ transform: `translateY(${yOffset}px)` }"
+  >
     <div class="slider" :style="{ transform: `translateX(${position}px)` }">
-      <img v-for="(img, idx) in [...images, ...images]" :key="idx" :src="img" class="slider-image" alt="画像" />
+      <img
+        v-for="(img, idx) in [...images, ...images]"
+        :key="idx"
+        :src="img"
+        class="slider-image"
+        alt="画像"
+      />
     </div>
   </div>
   <div v-else>
     <div class="slider animation">
-      <img v-for="(img, idx) in [...images, ...images, ...images]" :key="idx" :src="img" class="slider-image" alt="画像" />
+      <img
+        v-for="(img, idx) in [...images, ...images, ...images]"
+        :key="idx"
+        :src="img"
+        class="slider-image"
+        alt="画像"
+      />
     </div>
   </div>
 </template>

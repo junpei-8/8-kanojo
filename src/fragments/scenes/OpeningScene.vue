@@ -1,14 +1,14 @@
 <script setup>
-import { useGameLogic } from '../../composables/use-game-logic.js'
+import { useGameLogic } from '../../composables/use-game-logic.js';
 
-const { startGame } = useGameLogic()
+const { startGame } = useGameLogic();
 
 /**
  * ゲームを開始する
  * スタートボタンクリック時に呼ばれる
  */
 function onStart() {
-  startGame()
+  startGame();
 }
 </script>
 
@@ -18,7 +18,7 @@ function onStart() {
       <h1 class="game-title">8番彼女</h1>
       <div class="game-description">
         <p class="description-text">
-          レンタル彼女サービスの解約ページに<br>
+          レンタル彼女サービスの解約ページに<br />
           <strong>異変</strong>が表示されることがあります。
         </p>
         <div class="rules">
@@ -31,9 +31,7 @@ function onStart() {
           </ul>
         </div>
       </div>
-      <button @click="onStart" class="start-button">
-        ゲームスタート
-      </button>
+      <button @click="onStart" class="start-button">ゲームスタート</button>
     </div>
   </div>
 </template>
@@ -45,7 +43,11 @@ function onStart() {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(255, 107, 157, 0.95) 0%, rgba(255, 182, 193, 0.95) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 157, 0.95) 0%,
+    rgba(255, 182, 193, 0.95) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;

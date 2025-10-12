@@ -1,164 +1,168 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue';
 
 // Line電話通知の状態管理
-const showLineCall = ref(false)
-const lineCallTimer = ref(null)
-const callState = ref('idle') // 'idle', 'incoming', 'connected', 'ended'
-const showCallScreen = ref(false)
+const showLineCall = ref(false);
+const lineCallTimer = ref(null);
+const callState = ref('idle'); // 'idle', 'incoming', 'connected', 'ended'
+const showCallScreen = ref(false);
 
 // 音声再生の管理
-const ringtoneAudio = ref(null)
-const recordingAudio = ref(null)
-const isPlayingRingtone = ref(false)
-const isPlayingRecording = ref(false)
+const ringtoneAudio = ref(null);
+const recordingAudio = ref(null);
+const isPlayingRingtone = ref(false);
+const isPlayingRecording = ref(false);
 
 // 固定画像の管理
-const profileSection = ref(null)
+const profileSection = ref(null);
 
 // 音声ファイルの初期化
 const initializeAudio = () => {
   // 着信音の初期化
-  ringtoneAudio.value = new Audio('/audio/line.mp3')
-  ringtoneAudio.value.loop = true
-  ringtoneAudio.value.volume = 0.7
-  
+  ringtoneAudio.value = new Audio('/audio/line.mp3');
+  ringtoneAudio.value.loop = true;
+  ringtoneAudio.value.volume = 0.7;
+
   // 録音内容の初期化
-  recordingAudio.value = new Audio('/audio/yakusoku.mp3')
-  recordingAudio.value.volume = 0.8
-}
+  recordingAudio.value = new Audio('/audio/yakusoku.mp3');
+  recordingAudio.value.volume = 0.8;
+};
 
 // 着信音を再生する関数
 const playRingtone = () => {
   if (ringtoneAudio.value && !isPlayingRingtone.value) {
-    ringtoneAudio.value.play()
-    isPlayingRingtone.value = true
+    ringtoneAudio.value.play();
+    isPlayingRingtone.value = true;
   }
-}
+};
 
 // 着信音を停止する関数
 const stopRingtone = () => {
   if (ringtoneAudio.value && isPlayingRingtone.value) {
-    ringtoneAudio.value.pause()
-    ringtoneAudio.value.currentTime = 0
-    isPlayingRingtone.value = false
+    ringtoneAudio.value.pause();
+    ringtoneAudio.value.currentTime = 0;
+    isPlayingRingtone.value = false;
   }
-}
+};
 
 // 録音内容を再生する関数
 const playRecording = () => {
   if (recordingAudio.value && !isPlayingRecording.value) {
-    recordingAudio.value.play()
-    isPlayingRecording.value = true
-    
+    recordingAudio.value.play();
+    isPlayingRecording.value = true;
+
     // 録音終了時の処理
     recordingAudio.value.onended = () => {
-      isPlayingRecording.value = false
-    }
+      isPlayingRecording.value = false;
+    };
   }
-}
+};
 
 // ランダムなタイミングでLine電話を表示する関数
 const scheduleLineCall = () => {
   // 1秒から6秒の間でランダムな時間を生成
-  const randomTime = Math.floor(Math.random() * 5000) + 1000 // 1000ms = 1秒, 6000ms = 6秒
-  
+  const randomTime = Math.floor(Math.random() * 5000) + 1000; // 1000ms = 1秒, 6000ms = 6秒
+
   lineCallTimer.value = setTimeout(() => {
-    showLineCall.value = true
-    callState.value = 'incoming'
-    playRingtone() // 着信音を再生
-    
+    showLineCall.value = true;
+    callState.value = 'incoming';
+    playRingtone(); // 着信音を再生
+
     // 3秒後に通知を非表示にする（自動拒否）
     setTimeout(() => {
       if (callState.value === 'incoming') {
-        declineCall()
+        declineCall();
       }
-    }, 3000)
-  }, randomTime)
-}
+    }, 3000);
+  }, randomTime);
+};
 
 // 通話を拒否する関数
 const declineCall = () => {
-  stopRingtone() // 着信音を停止
-  showLineCall.value = false
-  showCallScreen.value = false
-  callState.value = 'idle'
+  stopRingtone(); // 着信音を停止
+  showLineCall.value = false;
+  showCallScreen.value = false;
+  callState.value = 'idle';
   // 再度ランダムなタイミングでスケジュール
-  scheduleLineCall()
-}
+  scheduleLineCall();
+};
 
 // 通話に応答する関数
 const acceptCall = () => {
-  stopRingtone() // 着信音を停止
-  showLineCall.value = false
-  showCallScreen.value = true
-  callState.value = 'connected'
-  
+  stopRingtone(); // 着信音を停止
+  showLineCall.value = false;
+  showCallScreen.value = true;
+  callState.value = 'connected';
+
   // 録音内容を再生
-  playRecording()
-  
+  playRecording();
+
   // 録音終了後に通話終了
   if (recordingAudio.value) {
     recordingAudio.value.onended = () => {
-      isPlayingRecording.value = false
-      endCall()
-    }
+      isPlayingRecording.value = false;
+      endCall();
+    };
   } else {
     // 録音ファイルが読み込めない場合のフォールバック
     setTimeout(() => {
-      endCall()
-    }, 10000)
+      endCall();
+    }, 10000);
   }
-}
+};
 
 // 通話を終了する関数
 const endCall = () => {
   // 録音再生を停止
   if (recordingAudio.value && isPlayingRecording.value) {
-    recordingAudio.value.pause()
-    recordingAudio.value.currentTime = 0
-    isPlayingRecording.value = false
+    recordingAudio.value.pause();
+    recordingAudio.value.currentTime = 0;
+    isPlayingRecording.value = false;
   }
-  
-  showCallScreen.value = false
-  callState.value = 'ended'
-  
+
+  showCallScreen.value = false;
+  callState.value = 'ended';
+
   // 少し待ってから再度ランダムなタイミングでスケジュール
   setTimeout(() => {
-    callState.value = 'idle'
-    scheduleLineCall()
-  }, 2000)
-}
+    callState.value = 'idle';
+    scheduleLineCall();
+  }, 2000);
+};
 
 // スクロールイベントの処理（固定画像のため不要だが、将来の拡張のために残す）
 const handleScroll = () => {
   // 固定画像のため、スクロール処理は不要
-}
+};
 
 // コンポーネントがマウントされた時に開始
 onMounted(() => {
-  initializeAudio()
-  scheduleLineCall()
-})
+  initializeAudio();
+  scheduleLineCall();
+});
 
 // コンポーネントがアンマウントされる時にタイマーと音声をクリア
 onUnmounted(() => {
   if (lineCallTimer.value) {
-    clearTimeout(lineCallTimer.value)
+    clearTimeout(lineCallTimer.value);
   }
-  stopRingtone()
+  stopRingtone();
   if (recordingAudio.value && isPlayingRecording.value) {
-    recordingAudio.value.pause()
+    recordingAudio.value.pause();
   }
-})
+});
 </script>
 
 <template>
   <div>
     <div class="fixed-rental">
-      <img src="/img/kanojo/shizuko.png" alt="レンタル彼女" class="fixed-image">
+      <img
+        src="/img/kanojo/shizuko.png"
+        alt="レンタル彼女"
+        class="fixed-image"
+      />
     </div>
-    
+
     <!-- Line電話通知 -->
     <div v-if="showLineCall" class="line-call-notification">
       <div class="line-call-content">
@@ -187,7 +191,7 @@ onUnmounted(() => {
             <div class="call-timer">00:10</div>
           </div>
         </div>
-        
+
         <div class="audio-visualizer">
           <div class="audio-bars">
             <div class="bar" v-for="n in 5" :key="n"></div>
@@ -197,7 +201,7 @@ onUnmounted(() => {
             通話中...
           </div>
         </div>
-        
+
         <div class="call-controls">
           <button class="mute-btn" title="ミュート">
             <span>🔇</span>
@@ -231,7 +235,7 @@ onUnmounted(() => {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: linear-gradient(135deg, #00C300, #00A000);
+  background: linear-gradient(135deg, #00c300, #00a000);
   border-radius: 15px;
   padding: 15px;
   box-shadow: 0 8px 25px rgba(0, 195, 0, 0.3);
@@ -296,7 +300,8 @@ onUnmounted(() => {
   justify-content: space-between;
 }
 
-.decline-btn, .accept-btn {
+.decline-btn,
+.accept-btn {
   flex: 1;
   padding: 8px 16px;
   border: none;
@@ -317,7 +322,7 @@ onUnmounted(() => {
 
 .accept-btn {
   background: white;
-  color: #00C300;
+  color: #00c300;
 }
 
 .accept-btn:hover {
@@ -358,7 +363,7 @@ onUnmounted(() => {
 
 .caller-avatar {
   font-size: 80px;
-  background: linear-gradient(135deg, #00C300, #00A000);
+  background: linear-gradient(135deg, #00c300, #00a000);
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -382,7 +387,7 @@ onUnmounted(() => {
 
 .call-status {
   font-size: 16px;
-  color: #00C300;
+  color: #00c300;
   margin: 0;
 }
 
@@ -409,20 +414,40 @@ onUnmounted(() => {
 
 .bar {
   width: 6px;
-  background: linear-gradient(to top, #00C300, #00A000);
+  background: linear-gradient(to top, #00c300, #00a000);
   border-radius: 3px;
   animation: audioWave 1.5s ease-in-out infinite;
 }
 
-.bar:nth-child(1) { animation-delay: 0s; height: 20px; }
-.bar:nth-child(2) { animation-delay: 0.1s; height: 30px; }
-.bar:nth-child(3) { animation-delay: 0.2s; height: 40px; }
-.bar:nth-child(4) { animation-delay: 0.3s; height: 25px; }
-.bar:nth-child(5) { animation-delay: 0.4s; height: 35px; }
+.bar:nth-child(1) {
+  animation-delay: 0s;
+  height: 20px;
+}
+.bar:nth-child(2) {
+  animation-delay: 0.1s;
+  height: 30px;
+}
+.bar:nth-child(3) {
+  animation-delay: 0.2s;
+  height: 40px;
+}
+.bar:nth-child(4) {
+  animation-delay: 0.3s;
+  height: 25px;
+}
+.bar:nth-child(5) {
+  animation-delay: 0.4s;
+  height: 35px;
+}
 
 @keyframes audioWave {
-  0%, 100% { transform: scaleY(0.5); }
-  50% { transform: scaleY(1); }
+  0%,
+  100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
 .recording-indicator {
@@ -430,7 +455,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #00C300;
+  color: #00c300;
 }
 
 .recording-dot {
@@ -442,8 +467,13 @@ onUnmounted(() => {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .call-controls {
@@ -452,7 +482,9 @@ onUnmounted(() => {
   align-items: center;
 }
 
-.mute-btn, .end-call-btn, .speaker-btn {
+.mute-btn,
+.end-call-btn,
+.speaker-btn {
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -467,7 +499,8 @@ onUnmounted(() => {
   justify-content: center;
 }
 
-.mute-btn:hover, .speaker-btn:hover {
+.mute-btn:hover,
+.speaker-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -497,7 +530,7 @@ onUnmounted(() => {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border-radius: 15px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 2px solid #00C300;
+  border: 2px solid #00c300;
 }
 
 .profile-content {
@@ -507,7 +540,6 @@ onUnmounted(() => {
 }
 
 .profile-image-container {
-
   flex-shrink: 0;
 }
 
@@ -515,7 +547,7 @@ onUnmounted(() => {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 4px solid #00C300;
+  border: 4px solid #00c300;
   box-shadow: 0 4px 15px rgba(0, 195, 0, 0.3);
   transition: all 0.3s ease;
   object-fit: cover;
@@ -535,7 +567,7 @@ onUnmounted(() => {
   color: #333;
   font-size: 28px;
   margin-bottom: 20px;
-  border-bottom: 3px solid #00C300;
+  border-bottom: 3px solid #00c300;
   padding-bottom: 10px;
 }
 
@@ -571,7 +603,7 @@ onUnmounted(() => {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  border-left: 4px solid #00C300;
+  border-left: 4px solid #00c300;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -582,7 +614,10 @@ onUnmounted(() => {
   line-height: 1.6;
 }
 
-.contract-section, .warning-section, .action-section, .terms-section {
+.contract-section,
+.warning-section,
+.action-section,
+.terms-section {
   margin: 40px 0;
   padding: 30px;
   background: #f9f9f9;
@@ -590,11 +625,14 @@ onUnmounted(() => {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.contract-section h2, .warning-section h2, .action-section h2, .terms-section h2 {
+.contract-section h2,
+.warning-section h2,
+.action-section h2,
+.terms-section h2 {
   color: #333;
   margin-bottom: 20px;
   font-size: 20px;
-  border-bottom: 2px solid #00C300;
+  border-bottom: 2px solid #00c300;
   padding-bottom: 10px;
 }
 
@@ -610,7 +648,7 @@ onUnmounted(() => {
   padding: 10px;
   background: white;
   border-radius: 5px;
-  border-left: 4px solid #00C300;
+  border-left: 4px solid #00c300;
 }
 
 .contract-item .label {
@@ -650,7 +688,7 @@ onUnmounted(() => {
 
 .reason-textarea:focus {
   outline: none;
-  border-color: #00C300;
+  border-color: #00c300;
 }
 
 .button-group {
@@ -659,7 +697,8 @@ onUnmounted(() => {
   justify-content: center;
 }
 
-.cancel-btn, .terminate-btn {
+.cancel-btn,
+.terminate-btn {
   padding: 15px 30px;
   border: none;
   border-radius: 8px;
@@ -670,7 +709,7 @@ onUnmounted(() => {
 }
 
 .cancel-btn {
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
 }
 
@@ -696,17 +735,17 @@ onUnmounted(() => {
 }
 
 .link {
-  color: #00C300;
+  color: #00c300;
   text-decoration: none;
   font-weight: 500;
   padding: 8px 16px;
-  border: 1px solid #00C300;
+  border: 1px solid #00c300;
   border-radius: 5px;
   transition: all 0.3s ease;
 }
 
 .link:hover {
-  background: #00C300;
+  background: #00c300;
   color: white;
 }
 
@@ -725,7 +764,7 @@ onUnmounted(() => {
   height: 120px;
   border-radius: 50%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  border: 3px solid #00C300;
+  border: 3px solid #00c300;
   transition: all 0.3s ease;
   object-fit: cover;
 }
@@ -740,45 +779,48 @@ onUnmounted(() => {
   .main-content {
     padding: 10px;
   }
-  
+
   .profile-section {
     margin: 20px 0;
     padding: 20px;
   }
-  
+
   .profile-content {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
   }
-  
+
   .profile-image {
     width: 120px;
     height: 120px;
   }
-  
+
   .profile-name {
     font-size: 24px;
   }
-  
+
   .detail-item {
     justify-content: center;
   }
-  
-  .contract-section, .warning-section, .action-section, .terms-section {
+
+  .contract-section,
+  .warning-section,
+  .action-section,
+  .terms-section {
     margin: 20px 0;
     padding: 20px;
   }
-  
+
   .button-group {
     flex-direction: column;
   }
-  
+
   .fixed-rental {
     right: 10px;
   }
-  
+
   .fixed-image {
     width: 80px;
     height: 80px;
