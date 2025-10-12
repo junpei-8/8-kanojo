@@ -1,9 +1,7 @@
 /**
  * 異変の設定オブジェクト。
  *
- * @typedef {Object} AnomalyConfig
  * @property {string} id - 異変の一意なID
- * @property {import('vue').Component} component - 異変を表示するVueコンポーネント
  */
 
 /**
@@ -33,5 +31,8 @@ export const anomalies = [
   },
   {
     id: 'calling'
+  },
+  {
+    id: 'broken'
   }
 ]

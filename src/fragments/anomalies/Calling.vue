@@ -60,8 +60,8 @@ const playRecording = () => {
 
 // ランダムなタイミングでLine電話を表示する関数
 const scheduleLineCall = () => {
-  // 1秒から15秒の間でランダムな時間を生成
-  const randomTime = Math.floor(Math.random() * 5000) + 1000 // 1000ms = 1秒, 15000ms = 15秒
+  // 1秒から6秒の間でランダムな時間を生成
+  const randomTime = Math.floor(Math.random() * 5000) + 1000 // 1000ms = 1秒, 6000ms = 6秒
   
   lineCallTimer.value = setTimeout(() => {
     showLineCall.value = true

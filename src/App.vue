@@ -9,6 +9,7 @@ import KeyVisual from './fragments/sections/KeyVisual.vue'
 import ReasonSection from './fragments/sections/ReasonSection.vue'
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
 import Calling from './fragments/anomalies/Calling.vue'
+import BrokenGlass from './fragments/anomalies/BrokenGlass.vue'
 import GameFooter from './fragments/sections/GameFooter.vue'
 
 const { handleAnswer, startRound } = useGameLogic()
@@ -84,6 +85,8 @@ function onProceed() {
       <OtherKanojoSection
         :is-anomaly="gameState.currentAnomaly === 'otherKanojos'"
       />
+      <BrokenGlass v-if="gameState.currentAnomaly === 'broken'" />
+
       <Calling v-if="gameState.currentAnomaly === 'calling'" />
 
       <GameFooter
