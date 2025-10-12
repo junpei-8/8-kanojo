@@ -5,8 +5,16 @@ import { useGameLogic } from './composables/use-game-logic.js'
 import OpeningScene from './fragments/scenes/OpeningScene.vue'
 import EndingScene from './fragments/scenes/EndingScene.vue'
 import GameButtons from './fragments/sections/GameButtons.vue'
+import KeyVisual from './fragments/sections/KeyVisual.vue'
+import ReasonSection from './fragments/sections/ReasonSection.vue'
+import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
+import Calling from './fragments/anomalies/Calling.vue'
+import BrokenGlass from './fragments/anomalies/BrokenGlass.vue'
+import MojiBake from './fragments/anomalies/MojiBake.vue'
+import Comment from './fragments/anomalies/Comment.vue'
+import GameFooter from './fragments/sections/GameFooter.vue'
 
-const { currentAnomalyComponent, handleAnswer, startRound } = useGameLogic()
+const { handleAnswer, startRound } = useGameLogic()
 
 /**
  * 最終ステージ（8回目）かどうか。
@@ -67,160 +75,45 @@ function onProceed() {
   <EndingScene v-if="gameState.isCleared" />
 
   <!-- ゲーム画面 -->
-  <div v-if="gameState.gameStarted" class="cancel-page">
-    <!-- 進捗表示 -->
-    <div class="progress-bar">
-      <span class="progress-text">進捗: {{ gameState.currentStage }}/8</span>
-    </div>
-
+  <div class="game-view" v-if="gameState.gameStarted">
     <!-- ゲーム画面 -->
     <div class="game-content">
-      <!-- 異変コンポーネントの動的表示 -->
-      <component :is="currentAnomalyComponent" v-if="currentAnomalyComponent" />
+      {{ gameState.currentAnomaly }}
 
-      <!-- 解約フォーム -->
-      <div class="cancel-form">
-        <h1 class="form-title">レンタル彼女サービス解約手続き</h1>
+      <KeyVisual />
 
-        <div class="form-section">
-          <label class="form-label">ご契約者名</label>
-          <input type="text" class="form-input" value="山田 太郎" readonly />
-        </div>
+      <ReasonSection />
 
-        <div class="form-section">
-          <label class="form-label">契約プラン</label>
-          <input type="text" class="form-input" value="プレミアムプラン（月額9,800円）" readonly />
-        </div>
+      <OtherKanojoSection
+        :is-anomaly="gameState.currentAnomaly === 'otherKanojos'"
+      />
+      <BrokenGlass v-if="gameState.currentAnomaly === 'broken'" />
 
-        <div class="form-section">
-          <label class="form-label">契約開始日</label>
-          <input type="text" class="form-input" value="2024年1月1日" readonly />
-        </div>
+      <Calling v-if="gameState.currentAnomaly === 'calling'" />
 
-        <div class="form-section">
-          <label class="form-label">解約理由</label>
-          <textarea class="form-textarea" readonly>本当の恋人ができたため</textarea>
-        </div>
+      <MojiBake v-if="gameState.currentAnomaly === 'mojibake'" />
 
-        <div class="info-box">
-          <p class="info-text">
-            ※ このページに<strong>異変がある場合は「戻る」</strong>ボタンを押してください<br>
-            ※ <strong>異変がない場合は「進む」</strong>ボタンを押してください
-          </p>
-        </div>
+      <Comment v-if="gameState.currentAnomaly === 'comment'" />
 
-        <!-- ボタン -->
-        <GameButtons
-          :is-last-stage="isLastStage"
-          :dodge-mode="dodgeMode"
-          @go-back="onGoBack"
-          @proceed="onProceed"
-        />
-      </div>
+      <GameFooter
+        :is-last-stage="isLastStage"
+        :dodge-mode="dodgeMode"
+        :progress="(gameState.currentStage / 7) * 100"
+        @go-back="onGoBack"
+        @proceed="onProceed"
+       />
+
     </div>
   </div>
 </template>
 
 <style scoped>
-.cancel-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ffeef8 0%, #fff5f9 100%);
-  padding: 100px 20px 40px;
-  position: relative;
+.game-view {
+  background-image: url('/img/bg.png');
+  background-repeat: repeat;
+  background-size: contain;
 }
-
-.progress-bar {
-  position: fixed;
-  top: 60px;
-  right: 20px;
-  background: white;
-  padding: 10px 20px;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 100;
-}
-
-.progress-text {
-  font-weight: bold;
-  color: #ff6b9d;
-  font-size: 16px;
-}
-
 .game-content {
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
-}
-
-.cancel-form {
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.form-title {
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 30px;
-  text-align: center;
-  border-bottom: 2px solid #ff6b9d;
-  padding-bottom: 15px;
-}
-
-.form-section {
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  color: #666;
-  font-weight: bold;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.form-input,
-.form-textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  background: #f9f9f9;
-  color: #333;
-  box-sizing: border-box;
-}
-
-.form-textarea {
-  min-height: 80px;
-  resize: vertical;
-  font-family: inherit;
-}
-
-.info-box {
-  background: #fff8dc;
-  border: 2px solid #ffd700;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 25px 0;
-}
-
-.info-text {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
-  line-height: 1.6;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 640px) {
-  .cancel-form {
-    padding: 25px;
-  }
-
-  .form-title {
-    font-size: 20px;
-  }
+  margin: auto;
 }
 </style>
