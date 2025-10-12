@@ -70,7 +70,7 @@ function onProceed() {
   <EndingScene v-if="gameState.isCleared" />
 
   <!-- ゲーム画面 -->
-  <div v-if="gameState.gameStarted">
+  <div class="game-view" v-if="gameState.gameStarted">
     <!-- ゲーム画面 -->
     <div class="game-content">
       {{ gameState.currentAnomaly }}
@@ -93,5 +93,12 @@ function onProceed() {
 </template>
 
 <style scoped>
-
+.game-view {
+  background-image: url('/img/bg.png');
+  background-repeat: repeat;
+  background-size: contain;
+}
+.game-content {
+  margin: auto;
+}
 </style>
