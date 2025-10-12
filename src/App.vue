@@ -78,6 +78,7 @@ function onProceed() {
       <GameFooter
         :is-last-stage="isLastStage"
         :dodge-mode="dodgeMode"
+        :progress="(gameState.currentStage / 7) * 100"
         @go-back="onGoBack"
         @proceed="onProceed"
        />

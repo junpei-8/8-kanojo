@@ -5,6 +5,7 @@ import { ref } from 'vue'
  * Props定義
  * @property {boolean} isLastStage - 最終ステージ（8回目）かどうか
  * @property {boolean} dodgeMode - ボタンが避けるモードかどうか
+ * @property {number} progress - 進行度（0〜100の数値）
  */
 const props = defineProps({
   isLastStage: {
@@ -14,6 +15,10 @@ const props = defineProps({
   dodgeMode: {
     type: Boolean,
     default: false
+  },
+  progress: {
+    type: Number,
+    required: true
   }
 })
 
@@ -61,22 +66,23 @@ function handleProceedHover() {
 
 <template>
   <div class="center-container">
-    <div class="button-row">
-      <button class="action-btn" @click="handleGoBack" style="margin-right: 12px;">キャンセル</button>
-      <button class="action-btn" @click="handleProceed" @mouseenter="handleProceedHover">
-        {{ props.isLastStage ? '解約する' : '進む' }}
-      </button>
-    </div>
-    <!-- 8-segment progress bar -->
-    <div class="progress-bar">
-      <div v-for="n in 8" :key="n" class="progress-segment"></div>
-    </div>
     <!-- 横長テロップ広告 -->
     <div class="telop-ad">
       <span class="telop-text">
         契約更新される方限定！月額料金
         <span class="telop-number">￥1000OFF</span>
       </span>
+    </div>
+    <div class="button-row">
+      <button class="action-btn" @click="handleGoBack">キャンセル</button>
+      <button class="action-btn" @click="handleProceed" @mouseenter="handleProceedHover">
+        {{ props.isLastStage ? '解約する' : '進む' }}
+      </button>
+    </div>
+    <!-- 8-segment progress bar -->
+    <div class="progress-bar-wrapper">
+      <div v-for="n in 8" :key="n" class="progress-segment"></div>
+      <div class="progress-bar" :style="{width: `${props.progress}%`}"></div>
     </div>
   </div>
 </template>
@@ -116,6 +122,13 @@ button.action-btn:last-child:hover {
   border-bottom-right-radius: 8px;
 }
 
+.button-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  gap: 12px;
+}
+
 /* Telop ad styles */
 .telop-ad {
   width: 100%;
@@ -152,7 +165,14 @@ button.action-btn:last-child:hover {
   box-shadow: 0 2px 12px rgba(229,57,53,0.18);
   border: 2px solid #ffd700;
 }
+.progress-bar-wrapper {
+  border-radius: 100vh;
+  height: 12px;
+  background-color: #aaa;
+}
+.progress-bar {
+  height: 100%;
+  background-color: #1976d2;
+  border-radius: 100vh;
+}
 </style>
-
-
-
