@@ -4,7 +4,7 @@ import { gameState, resetGame } from './store/game-store.js'
 import { useGameLogic } from './composables/use-game-logic.js'
 import OpeningScene from './fragments/scenes/OpeningScene.vue'
 import EndingScene from './fragments/scenes/EndingScene.vue'
-import GameButtons from './fragments/GameButtons.vue'
+import GameButtons from './fragments/sections/GameButtons.vue'
 
 const { currentAnomalyComponent, handleAnswer, startRound } = useGameLogic()
 
