@@ -1,6 +1,6 @@
-import { computed } from 'vue'
-import { gameState, resetGame } from '../store/game-store.js'
-import { anomalies } from '../types/anomalies.js'
+import { computed } from 'vue';
+import { gameState, resetGame } from '../store/game-store.js';
+import { anomalies } from '../types/anomalies.js';
 
 /**
  * ゲームロジックを提供するコンポーザブル。
@@ -20,18 +20,20 @@ export function useGameLogic() {
    * @type {import('vue').ComputedRef<import('vue').Component | null>}
    */
   const currentAnomalyComponent = computed(() => {
-    if (!gameState.value.currentAnomaly) return null
-    const anomaly = anomalies.find(a => a.id === gameState.value.currentAnomaly)
-    return anomaly?.component || null
-  })
+    if (!gameState.value.currentAnomaly) return null;
+    const anomaly = anomalies.find(
+      (a) => a.id === gameState.value.currentAnomaly,
+    );
+    return anomaly?.component || null;
+  });
 
   /**
    * ゲーム開始処理
    * gameStartedをtrueにしてラウンドを開始する
    */
   function startGame() {
-    gameState.value.gameStarted = true
-    startRound()
+    gameState.value.gameStarted = true;
+    startRound();
   }
 
   /**
@@ -40,25 +42,27 @@ export function useGameLogic() {
    */
   function startRound() {
     // 80%の確率で異変を表示
-    const shouldShowAnomaly = Math.random() < 0.8
+    const shouldShowAnomaly = Math.random() < 0.8;
 
     if (shouldShowAnomaly) {
       // 使用済みでない異変をフィルタリング
       const availableAnomalies = anomalies.filter(
-        a => !gameState.value.usedAnomalies.includes(a.id)
-      )
+        (a) => !gameState.value.usedAnomalies.includes(a.id),
+      );
 
       // 利用可能な異変がある場合、ランダムに選択
       if (availableAnomalies.length > 0) {
-        const randomIndex = Math.floor(Math.random() * availableAnomalies.length)
-        gameState.value.currentAnomaly = availableAnomalies[randomIndex].id
+        const randomIndex = Math.floor(
+          Math.random() * availableAnomalies.length,
+        );
+        gameState.value.currentAnomaly = availableAnomalies[randomIndex].id;
       } else {
         // すべての異変を使い切った場合は異変なし
-        gameState.value.currentAnomaly = null
+        gameState.value.currentAnomaly = null;
       }
     } else {
       // 異変なし
-      gameState.value.currentAnomaly = null
+      gameState.value.currentAnomaly = null;
     }
   }
 
@@ -67,31 +71,31 @@ export function useGameLogic() {
    * @param {boolean} goBack - 戻るボタンを押したかどうか
    */
   function handleAnswer(goBack) {
-    const hasAnomaly = gameState.value.currentAnomaly !== null
-    const isCorrect = (hasAnomaly && goBack) || (!hasAnomaly && !goBack)
+    const hasAnomaly = gameState.value.currentAnomaly !== null;
+    const isCorrect = (hasAnomaly && goBack) || (!hasAnomaly && !goBack);
 
     if (isCorrect) {
       // 正解の場合
       // 異変があった場合は使用済みリストに追加
       if (gameState.value.currentAnomaly) {
-        gameState.value.usedAnomalies.push(gameState.value.currentAnomaly)
+        gameState.value.usedAnomalies.push(gameState.value.currentAnomaly);
       }
 
       // ステージを進める
-      gameState.value.currentStage++
+      gameState.value.currentStage++;
 
       // クリア判定
       if (gameState.value.currentStage >= 8) {
-        gameState.value.isCleared = true
-        gameState.value.currentAnomaly = null
+        gameState.value.isCleared = true;
+        gameState.value.currentAnomaly = null;
       } else {
         // 次のラウンドを開始
-        startRound()
+        startRound();
       }
     } else {
       // 不正解の場合
-      resetGame()
-      startRound()
+      resetGame();
+      startRound();
     }
   }
 
@@ -101,6 +105,6 @@ export function useGameLogic() {
     startGame,
     startRound,
     handleAnswer,
-    resetGame
-  }
+    resetGame,
+  };
 }

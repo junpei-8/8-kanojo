@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 // --- パーティクルここから ---
 // パーティクル生成
-const particles = ref([])
-const particleCount = 50
+const particles = ref([]);
+const particleCount = 50;
 const createParticles = () => {
   for (let i = 0; i < particleCount; i++) {
     particles.value.push({
@@ -14,39 +14,39 @@ const createParticles = () => {
       size: Math.random() * 8 + 2,
       speed: Math.random() * 2 + 1,
       opacity: Math.random() * 0.8 + 0.2,
-      color: getRandomColor()
-    })
+      color: getRandomColor(),
+    });
   }
-}
+};
 
 // ランダムな色を取得
 const getRandomColor = () => {
-  const colors = ['#ffffff', '#f0f8ff', '#e6f3ff', '#d1ecf1', '#b8e6b8']
-  return colors[Math.floor(Math.random() * colors.length)]
-}
+  const colors = ['#ffffff', '#f0f8ff', '#e6f3ff', '#d1ecf1', '#b8e6b8'];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
 
 // パーティクルアニメーション
 const animateParticles = () => {
   setInterval(() => {
-    particles.value.forEach(particle => {
-      particle.y += particle.speed
-      
+    particles.value.forEach((particle) => {
+      particle.y += particle.speed;
+
       // 画面下に落ちたら上から再スタート
       if (particle.y > window.innerHeight) {
-        particle.y = -10
-        particle.x = Math.random() * window.innerWidth
+        particle.y = -10;
+        particle.x = Math.random() * window.innerWidth;
       }
-      
+
       // 軽やかな左右の揺れ
-      particle.x += Math.sin(particle.y * 0.01) * 0.5
-    })
-  }, 50)
-}
+      particle.x += Math.sin(particle.y * 0.01) * 0.5;
+    });
+  }, 50);
+};
 
 // --- パステルゲーミング背景ここから ---
-const currentHue = ref(0)
-const backgroundColor = ref('#FF0000')
-let intervalId = null
+const currentHue = ref(0);
+const backgroundColor = ref('#FF0000');
+let intervalId = null;
 
 // HSL to RGB 変換のためのヘルパー関数
 const hue2rgb = (p, q, t) => {
@@ -56,7 +56,7 @@ const hue2rgb = (p, q, t) => {
   if (t < 1 / 2) return q;
   if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
   return p;
-}
+};
 
 /**
  * HSL (色相、彩度、輝度) を RGB に変換する
@@ -82,7 +82,7 @@ const hsl2rgb = (h, s, l) => {
     g: Math.round(g * 255),
     b: Math.round(b * 255),
   };
-}
+};
 
 /**
  * RGBから#ffffff形式へ変換する
@@ -93,7 +93,7 @@ const RGB2bgColor = (r, g, b) => {
     return hex.length === 1 ? '0' + hex : hex;
   };
   return '#' + toHex(r) + toHex(g) + toHex(b);
-}
+};
 
 /**
  * HSL計算に基づき背景色を自動的に変更する
@@ -111,7 +111,7 @@ const startBackgroundAnimation = () => {
     backgroundColor.value = RGB2bgColor(rgb.r, rgb.g, rgb.b);
     document.body.style.backgroundColor = backgroundColor.value;
   }, 200);
-}
+};
 
 // --- 流れるコメントここから ---
 // コメント配列
@@ -137,15 +137,15 @@ const comments = ref([
   '愛してるから、離さない',
   'ずっと一緒だよ',
   '永遠にね',
-])
+]);
 
 // 流れるコメントの配列
-const flowingComments = ref([])
+const flowingComments = ref([]);
 
 // ランダムなコメントを取得
 const getRandomComment = () => {
-  return comments.value[Math.floor(Math.random() * comments.value.length)]
-}
+  return comments.value[Math.floor(Math.random() * comments.value.length)];
+};
 
 // コメントを生成する関数
 const createFlowingComment = () => {
@@ -157,61 +157,59 @@ const createFlowingComment = () => {
     speed: 7,
     size: 22,
     color: '#222',
-    opacity: Math.random() * 0.8 + 0.6
-  }
-  flowingComments.value.push(comment)
-}
+    opacity: Math.random() * 0.8 + 0.6,
+  };
+  flowingComments.value.push(comment);
+};
 
 // コメントアニメーション
 const animateComments = () => {
   setInterval(() => {
     flowingComments.value.forEach((comment, index) => {
-      comment.x -= comment.speed
-      
+      comment.x -= comment.speed;
+
       // 左端に到達したら削除
       if (comment.x < -200) {
-        flowingComments.value.splice(index, 1)
+        flowingComments.value.splice(index, 1);
       }
-    })
-  }, 50)
-}
+    });
+  }, 50);
+};
 
 // コメント生成の間隔
 const startCommentFlow = () => {
   setInterval(() => {
-    createFlowingComment()
-  }, 2000) // 2秒ごとに新しいコメントを生成
-}
-
-
+    createFlowingComment();
+  }, 2000); // 2秒ごとに新しいコメントを生成
+};
 
 // コンポーネントマウント時に実行
 onMounted(() => {
   // --- パーティクル ---
-  createParticles()
-  animateParticles()
+  createParticles();
+  animateParticles();
 
   // --- パステルゲーミング背景 ---
-  startBackgroundAnimation()
+  startBackgroundAnimation();
 
   // --- 流れるコメント ---
-  animateComments()
-  startCommentFlow()
-})
+  animateComments();
+  startCommentFlow();
+});
 
 // コンポーネントが破棄される前に、setIntervalをクリアしてメモリリークを防ぐ
 onBeforeUnmount(() => {
   if (intervalId) {
     clearInterval(intervalId);
   }
-})
+});
 </script>
 
 <template>
   <div id="app">
     <!-- パーティクル要素 -->
-    <div 
-      v-for="particle in particles" 
+    <div
+      v-for="particle in particles"
       :key="particle.id"
       class="particle"
       :style="{
@@ -220,14 +218,14 @@ onBeforeUnmount(() => {
         width: particle.size + 'px',
         height: particle.size + 'px',
         backgroundColor: particle.color,
-        opacity: particle.opacity
+        opacity: particle.opacity,
       }"
     ></div>
     <!-- パーティクル要素ここまで -->
 
     <!-- 流れるコメント要素 -->
-    <div 
-      v-for="comment in flowingComments" 
+    <div
+      v-for="comment in flowingComments"
       :key="comment.id"
       class="flowing-comment"
       :style="{
@@ -235,7 +233,7 @@ onBeforeUnmount(() => {
         top: comment.y + 'px',
         fontSize: comment.size + 'px',
         color: comment.color,
-        opacity: comment.opacity
+        opacity: comment.opacity,
       }"
     >
       {{ comment.text }}
@@ -251,7 +249,8 @@ onBeforeUnmount(() => {
 }
 
 body {
-  font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
+  font-family:
+    'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
   line-height: 1.6;
   color: #333;
   background-color: #eee;
@@ -270,7 +269,7 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .header h1 {
@@ -292,7 +291,7 @@ section {
   background: white;
   padding: 60px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-left: 4px solid #667eea;
 }
 
@@ -318,7 +317,7 @@ section p {
   border-radius: 8px;
   margin: 20px auto;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .image-placeholder {
@@ -329,7 +328,7 @@ section p {
   border-radius: 8px;
   margin: 20px auto;
   font-weight: 500;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .image-placeholder-key.wide {
@@ -353,7 +352,7 @@ section p {
   justify-content: center;
   border-radius: 6px;
   font-size: 0.8rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   aspect-ratio: 1;
 }
 
@@ -373,7 +372,12 @@ section p {
   right: -50%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 70%
+  );
   transform: rotate(45deg);
 }
 
@@ -392,7 +396,7 @@ section p {
   justify-content: center;
   border-radius: 6px;
   font-size: 0.8rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   width: 80px;
   height: 80px;
   flex-shrink: 0;
@@ -429,18 +433,19 @@ section:nth-child(4) {
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   white-space: nowrap;
-  font-family: 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
+  font-family:
+    'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 15px;
   }
-  
+
   .header h1 {
     font-size: 2rem;
   }
-  
+
   section {
     padding: 40px;
   }
