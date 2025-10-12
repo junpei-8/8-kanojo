@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 /**
  * Props定義
@@ -9,43 +9,43 @@ import { ref } from 'vue'
 const props = defineProps({
   isLastStage: {
     type: Boolean,
-    default: false
+    default: false,
   },
   dodgeMode: {
     type: Boolean,
-    default: false
-  }
-})
+    default: false,
+  },
+});
 
 /**
  * Events定義
  */
-const emit = defineEmits(['goBack', 'proceed'])
+const emit = defineEmits(['goBack', 'proceed']);
 
 /**
  * ボタンが既に避けたかどうかのフラグ
  * @type {import('vue').Ref<boolean>}
  */
-const hasDodged = ref(false)
+const hasDodged = ref(false);
 
 /**
  * ボタンが避けている状態かどうか
  * @type {import('vue').Ref<boolean>}
  */
-const isDodging = ref(false)
+const isDodging = ref(false);
 
 /**
  * 戻るボタンのクリックハンドラー
  */
 function handleGoBack() {
-  emit('goBack')
+  emit('goBack');
 }
 
 /**
  * 進むボタンのクリックハンドラー
  */
 function handleProceed() {
-  emit('proceed')
+  emit('proceed');
 }
 
 /**
@@ -53,8 +53,8 @@ function handleProceed() {
  */
 function handleProceedHover() {
   if (props.dodgeMode && !hasDodged.value) {
-    isDodging.value = true
-    hasDodged.value = true
+    isDodging.value = true;
+    hasDodged.value = true;
   }
 }
 </script>

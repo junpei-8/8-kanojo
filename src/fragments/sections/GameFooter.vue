@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 /**
  * Props定義
@@ -10,47 +10,47 @@ import { ref } from 'vue'
 const props = defineProps({
   isLastStage: {
     type: Boolean,
-    default: false
+    default: false,
   },
   dodgeMode: {
     type: Boolean,
-    default: false
+    default: false,
   },
   progress: {
     type: Number,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 /**
  * Events定義
  */
-const emit = defineEmits(['goBack', 'proceed'])
+const emit = defineEmits(['goBack', 'proceed']);
 
 /**
  * ボタンが既に避けたかどうかのフラグ
  * @type {import('vue').Ref<boolean>}
  */
-const hasDodged = ref(false)
+const hasDodged = ref(false);
 
 /**
  * ボタンが避けている状態かどうか
  * @type {import('vue').Ref<boolean>}
  */
-const isDodging = ref(false)
+const isDodging = ref(false);
 
 /**
  * 戻るボタンのクリックハンドラー
  */
 function handleGoBack() {
-  emit('goBack')
+  emit('goBack');
 }
 
 /**
  * 進むボタンのクリックハンドラー
  */
 function handleProceed() {
-  emit('proceed')
+  emit('proceed');
 }
 
 /**
@@ -58,8 +58,8 @@ function handleProceed() {
  */
 function handleProceedHover() {
   if (props.dodgeMode && !hasDodged.value) {
-    isDodging.value = true
-    hasDodged.value = true
+    isDodging.value = true;
+    hasDodged.value = true;
   }
 }
 </script>
@@ -75,19 +75,22 @@ function handleProceedHover() {
     </div>
     <div class="button-row">
       <button class="action-btn" @click="handleGoBack">キャンセル</button>
-      <button class="action-btn" @click="handleProceed" @mouseenter="handleProceedHover">
+      <button
+        class="action-btn"
+        @click="handleProceed"
+        @mouseenter="handleProceedHover"
+      >
         {{ props.isLastStage ? '解約する' : '進む' }}
       </button>
     </div>
     <!-- 8-segment progress bar -->
     <div class="progress-bar-wrapper">
       <div v-for="n in 8" :key="n" class="progress-segment"></div>
-      <div class="progress-bar" :style="{width: `${props.progress}%`}"></div>
+      <div class="progress-bar" :style="{ width: `${props.progress}%` }"></div>
       <span class="progress-text">{{ props.progress }} / 8</span>
     </div>
   </div>
 </template>
-
 
 <style scoped>
 button.action-btn {
@@ -98,13 +101,18 @@ button.action-btn {
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
-  transition: box-shadow 0.25s, transform 0.25s, background 0.25s, color 0.25s, border-color 0.25s;
+  transition:
+    box-shadow 0.25s,
+    transform 0.25s,
+    background 0.25s,
+    color 0.25s,
+    border-color 0.25s;
 }
 button.action-btn:active {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 button.action-btn:hover {
-  box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
   transform: scale(1.07);
 }
 button.action-btn:first-child:hover {
@@ -135,10 +143,16 @@ button.action-btn:last-child:hover {
   width: 100%;
   max-width: 700px;
   margin: 40px auto 0 auto;
-  background: repeating-linear-gradient(135deg, #ffe0e0 0px, #ffe0e0 40px, #fffbe6 40px, #fffbe6 80px);
+  background: repeating-linear-gradient(
+    135deg,
+    #ffe0e0 0px,
+    #ffe0e0 40px,
+    #fffbe6 40px,
+    #fffbe6 80px
+  );
   border: 2px solid #e53935;
   border-radius: 32px;
-  box-shadow: 0 4px 24px rgba(229,57,53,0.12);
+  box-shadow: 0 4px 24px rgba(229, 57, 53, 0.12);
   padding: 22px 0;
   display: flex;
   justify-content: center;
@@ -163,7 +177,7 @@ button.action-btn:last-child:hover {
   border-radius: 16px;
   padding: 4px 24px;
   margin-left: 12px;
-  box-shadow: 0 2px 12px rgba(229,57,53,0.18);
+  box-shadow: 0 2px 12px rgba(229, 57, 53, 0.18);
   border: 2px solid #ffd700;
 }
 .progress-bar-wrapper {
