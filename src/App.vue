@@ -6,6 +6,7 @@ import OpeningScene from './fragments/scenes/OpeningScene.vue'
 import EndingScene from './fragments/scenes/EndingScene.vue'
 import GameButtons from './fragments/sections/GameButtons.vue'
 import KeyVisual from './fragments/sections/KeyVisual.vue'
+import GameFooter from './fragments/sections/GameFooter.vue'
 
 const { handleAnswer, startRound } = useGameLogic()
 
@@ -74,13 +75,12 @@ function onProceed() {
 
       <KeyVisual />
 
-      <!-- ボタン -->
-      <GameButtons
+      <GameFooter
         :is-last-stage="isLastStage"
         :dodge-mode="dodgeMode"
         @go-back="onGoBack"
         @proceed="onProceed"
-      />
+       />
     </div>
   </div>
 </template>
