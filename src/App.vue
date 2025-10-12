@@ -1,42 +1,44 @@
 <script setup>
-import { computed } from 'vue'
-import { gameState, resetGame } from './store/game-store.js'
-import { useGameLogic } from './composables/use-game-logic.js'
-import OpeningScene from './fragments/scenes/OpeningScene.vue'
-import EndingScene from './fragments/scenes/EndingScene.vue'
-import GameButtons from './fragments/sections/GameButtons.vue'
-import KeyVisual from './fragments/sections/KeyVisual.vue'
-import ReasonSection from './fragments/sections/ReasonSection.vue'
-import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
-import Calling from './fragments/anomalies/Calling.vue'
-import BrokenGlass from './fragments/anomalies/BrokenGlass.vue'
-import MojiBake from './fragments/anomalies/MojiBake.vue'
-import Comment from './fragments/anomalies/Comment.vue'
-import GameFooter from './fragments/sections/GameFooter.vue'
+import { computed } from 'vue';
+import { gameState, resetGame } from './store/game-store.js';
+import { useGameLogic } from './composables/use-game-logic.js';
+import OpeningScene from './fragments/scenes/OpeningScene.vue';
+import EndingScene from './fragments/scenes/EndingScene.vue';
+import GameButtons from './fragments/sections/GameButtons.vue';
+import KeyVisual from './fragments/sections/KeyVisual.vue';
+import ReasonSection from './fragments/sections/ReasonSection.vue';
+import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
+import Calling from './fragments/anomalies/Calling.vue';
+import BrokenGlass from './fragments/anomalies/BrokenGlass.vue';
+import MojiBake from './fragments/anomalies/MojiBake.vue';
+import Comment from './fragments/anomalies/Comment.vue';
+import GameFooter from './fragments/sections/GameFooter.vue';
 
-const { handleAnswer, startRound } = useGameLogic()
+const { handleAnswer, startRound } = useGameLogic();
 
 /**
  * 最終ステージ（8回目）かどうか。
  *
  * @type {import('vue').ComputedRef<boolean>}
  */
-const isLastStage = computed(() => gameState.value.currentStage === 7)
+const isLastStage = computed(() => gameState.value.currentStage === 7);
 
 /**
  * ボタンが避けるモードかどうか（buttonDodge異変時）
  *
  * @type {import('vue').ComputedRef<boolean>}
  */
-const dodgeMode = computed(() => gameState.value.currentAnomaly === 'buttonDodge')
+const dodgeMode = computed(
+  () => gameState.value.currentAnomaly === 'buttonDodge',
+);
 
 /**
  * 戻るボタンのクリックハンドラー。
  * ページトップにスクロールしてから処理を実行。
  */
 function onGoBack() {
-  window.scrollTo(0, 0)
-  handleAnswer(true)
+  window.scrollTo(0, 0);
+  handleAnswer(true);
 }
 
 /**
@@ -50,20 +52,20 @@ function onProceed() {
     if (confirm('本当に進みますか？')) {
       if (confirm('確認：本当に解約手続きを進めますか？')) {
         // OKを押した = 失敗（異変があるのに進んだ）
-        window.scrollTo(0, 0)
-        resetGame()
-        startRound()
-        return
+        window.scrollTo(0, 0);
+        resetGame();
+        startRound();
+        return;
       }
     }
 
     // キャンセルした場合は何もしない（正解は「戻る」ボタン）
-    return
+    return;
   }
 
   // 通常の処理
-  window.scrollTo(0, 0)
-  handleAnswer(false)
+  window.scrollTo(0, 0);
+  handleAnswer(false);
 }
 </script>
 
@@ -101,8 +103,7 @@ function onProceed() {
         :progress="(gameState.currentStage / 7) * 100"
         @go-back="onGoBack"
         @proceed="onProceed"
-       />
-
+      />
     </div>
   </div>
 </template>
