@@ -117,11 +117,16 @@ onBeforeUnmount(() => {
 
 <template>
   <p class="highlight">もう一度チャンスをください</p>
-  <p class="highlight">本サービスには他にもたくさんの女の子がいます！</p>
+  <p class="highlight">本サービスには他にもたくさんの彼女がいます！</p>
 
-  <div class="slider-container" :style="{ transform: `translateY(${yOffset}px)` }">
+  <div v-if="props.isAnomaly" class="slider-container" :style="{ transform: `translateY(${yOffset}px)` }">
     <div class="slider" :style="{ transform: `translateX(${position}px)` }">
       <img v-for="(img, idx) in [...images, ...images]" :key="idx" :src="img" class="slider-image" alt="画像" />
+    </div>
+  </div>
+  <div v-else>
+    <div class="slider animation">
+      <img v-for="(img, idx) in [...images, ...images, ...images]" :key="idx" :src="img" class="slider-image" alt="画像" />
     </div>
   </div>
 </template>
@@ -146,16 +151,29 @@ onBeforeUnmount(() => {
 
 .slider {
   display: flex;
-  width: max-content;
   will-change: transform;
+  gap: 10px;
+  width: 1260px;
 }
 
 .slider-image {
   width: 200px;
   height: 200px;
   object-fit: cover;
-  margin-right: 10px;
   border-radius: 8px;
   border: 1px solid #aaa;
+}
+
+@keyframes loop {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animation {
+  animation: loop 20s linear infinite both;
 }
 </style>
