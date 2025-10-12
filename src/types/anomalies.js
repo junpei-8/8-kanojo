@@ -34,5 +34,8 @@ export const anomalies = [
   },
   {
     id: 'broken'
+  },
+  {
+    id: 'mojibake'
   }
 ]

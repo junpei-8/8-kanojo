@@ -10,6 +10,7 @@ import ReasonSection from './fragments/sections/ReasonSection.vue'
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
 import Calling from './fragments/anomalies/Calling.vue'
 import BrokenGlass from './fragments/anomalies/BrokenGlass.vue'
+import MojiBake from './fragments/anomalies/MojiBake.vue'
 import GameFooter from './fragments/sections/GameFooter.vue'
 
 const { handleAnswer, startRound } = useGameLogic()
@@ -88,6 +89,8 @@ function onProceed() {
       <BrokenGlass v-if="gameState.currentAnomaly === 'broken'" />
 
       <Calling v-if="gameState.currentAnomaly === 'calling'" />
+
+      <MojiBake v-if="gameState.currentAnomaly === 'mojibake'" />
 
       <GameFooter
         :is-last-stage="isLastStage"
