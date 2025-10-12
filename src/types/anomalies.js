@@ -41,5 +41,8 @@ export const anomalies = [
   },
   {
     id: 'otherKanojos'
+  },
+  {
+    id: 'calling'
   }
 ]

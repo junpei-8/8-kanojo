@@ -8,6 +8,7 @@ import GameButtons from './fragments/sections/GameButtons.vue'
 import KeyVisual from './fragments/sections/KeyVisual.vue'
 import ReasonSection from './fragments/sections/ReasonSection.vue'
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
+import Calling from './fragments/anomalies/Calling.vue'
 import GameFooter from './fragments/sections/GameFooter.vue'
 
 const { handleAnswer, startRound } = useGameLogic()
@@ -81,8 +82,9 @@ function onProceed() {
       <ReasonSection />
 
       <OtherKanojoSection
-        :is-anomaly="gameState.currentAnomaly.id === 'otherKanojos'"
+        :is-anomaly="gameState.currentAnomaly === 'otherKanojos'"
       />
+      <Calling v-if="gameState.currentAnomaly === 'calling'" />
 
       <GameFooter
         :is-last-stage="isLastStage"
@@ -91,6 +93,7 @@ function onProceed() {
         @go-back="onGoBack"
         @proceed="onProceed"
        />
+
     </div>
   </div>
 </template>

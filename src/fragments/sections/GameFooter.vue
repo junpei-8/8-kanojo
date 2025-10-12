@@ -170,7 +170,8 @@ button.action-btn:last-child:hover {
   border-radius: 100vh;
   height: 12px;
   background-color: #aaa;
-  margin-top: 20px;
+  max-width: 1020px;
+  margin: 20px auto;
 }
 .progress-bar {
   height: 100%;
@@ -183,5 +184,6 @@ button.action-btn:last-child:hover {
 }
 .container {
   padding: 0 20px;
+  padding-bottom: 80px;
 }
 </style>
