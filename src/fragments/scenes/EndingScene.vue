@@ -1,30 +1,35 @@
 <script setup>
-import { resetGame } from '../../store/game-store.js'
-import { useGameLogic } from '../../composables/use-game-logic.js'
+import { ref, computed } from 'vue'
+import GirlfriendEndingImage1 from '../../assets/girlfriend/ending-1.png';
+import GirlfriendEndingImage2 from '../../assets/girlfriend/ending-2.png';
 
-const { startRound } = useGameLogic()
+const TEXTS = [
+  `俺はついにしずこと別れることが出来た。\n正直未練がないかと言われると嘘になる。`,
+  `でも俺は本当の彼女を作らないと。そう思って解約ページに進んだはずなのに\nなぜか解約ページから前に進まなかった気がする、、、`,
+  `あれ、あそこにいるのは、、、`,
+  '、、、しずこだ\n何度も来てきた姿だ、見間違うはずはない',
+  'そうだ、しずこはレンタル彼女なんだ、他の男と歩いていても\nなんらおかしくない',
+  'いや、なんなら一緒に歩いている男は本物の彼氏かもしれない。\nシュッとしていてスタイリッシュな人だ、俺なんかよりよっぽどお似合いだ。',
+  '無意識に下唇を噛んでいる自分に気付き嫌気がさした。\nわかっている、俺への対応は嘘なんだってことぐらいは、、、',
+  'もう俺は決別したんだ、レンタルではない本当に自分のことに\n向き合ってくれる恋人をつくるために、、、',
+  'ありがとうしずこ、君と一緒にいた時間はとても楽しかった、\n決してお金も時間も無駄ではなかった俺は強がりではなく思っている',
+  '小さく俺はそう呟いて、俺には似つかわしくないこの街を後にした、、、'
+]
 
-/**
- * ゲームをリスタートする
- * ゲーム状態をリセットして新しいラウンドを開始する
- */
-function restart() {
-  resetGame()
-  startRound()
+const currentIndex = ref(0)
+const currentText = computed(() => TEXTS[currentIndex.value])
+
+const next = () => {
+  currentIndex.value = currentIndex.value + 1
 }
 </script>
 
 <template>
-  <div class="ending-overlay">
-    <div class="ending-content">
-      <h1 class="ending-title">ゲームクリア！</h1>
-      <p class="ending-message">
-        おめでとうございます！<br>
-        すべての異変を見抜きました。
-      </p>
-      <button @click="restart" class="restart-button">
-        もう一度プレイ
-      </button>
+  <div class="ending-overlay" @click="next">
+    <img class="photo" :src="GirlfriendEndingImage1" alt="" :data-show="currentIndex >=3">
+    <img class="photo" :src="GirlfriendEndingImage2" alt="" :data-show="currentIndex >=TEXTS.length">
+    <div class="talk-box" v-if="currentText">
+      {{ currentText }}
     </div>
   </div>
 </template>
@@ -36,94 +41,37 @@ function restart() {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(107, 255, 157, 0.95) 0%, rgba(157, 255, 182, 0.95) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: #000;
   z-index: 9999;
-  animation: fadeIn 0.5s ease;
-}
-
-.ending-content {
-  background: white;
-  padding: 60px 40px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  max-width: 500px;
-  animation: fadeInUp 0.5s ease;
-}
-
-.ending-title {
-  font-size: 36px;
-  color: #ff6b9d;
-  margin-bottom: 20px;
-  animation: bounce 1s ease infinite;
-}
-
-.ending-message {
-  font-size: 18px;
-  color: #666;
+  font-size: 28px;
+  font-weight: 800;
   line-height: 1.8;
-  margin-bottom: 30px;
 }
 
-.restart-button {
-  padding: 15px 40px;
-  font-size: 16px;
-  font-weight: bold;
-  background: #ff6b9d;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.talk-box {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  width: 60%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 40px;
+  border-radius: 12px;
+  white-space: pre;
+  text-align: left;
+  max-width: 1000px;
 }
-
-.restart-button:hover {
-  background: #ff5a8d;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
+.photo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 100vh;
+  opacity: 0;
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 640px) {
-  .ending-content {
-    padding: 40px 25px;
-    margin: 20px;
-  }
-
-  .ending-title {
-    font-size: 28px;
-  }
+.photo[data-show="true"] {
+  opacity: 1;
+  transition: opacity 1s ease-in;
 }
 </style>
