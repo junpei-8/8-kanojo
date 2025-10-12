@@ -65,7 +65,7 @@ function handleProceedHover() {
 </script>
 
 <template>
-  <div class="center-container">
+  <div class="container">
     <!-- 横長テロップ広告 -->
     <div class="telop-ad">
       <span class="telop-text">
@@ -180,5 +180,8 @@ button.action-btn:last-child:hover {
 .progress-text {
   display: block;
   text-align: center;
+}
+.container {
+  padding: 0 20px;
 }
 </style>
