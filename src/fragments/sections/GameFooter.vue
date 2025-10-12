@@ -83,6 +83,7 @@ function handleProceedHover() {
     <div class="progress-bar-wrapper">
       <div v-for="n in 8" :key="n" class="progress-segment"></div>
       <div class="progress-bar" :style="{width: `${props.progress}%`}"></div>
+      <span class="progress-text">{{ props.progress }} / 8</span>
     </div>
   </div>
 </template>
@@ -169,10 +170,15 @@ button.action-btn:last-child:hover {
   border-radius: 100vh;
   height: 12px;
   background-color: #aaa;
+  margin-top: 20px;
 }
 .progress-bar {
   height: 100%;
   background-color: #1976d2;
   border-radius: 100vh;
+}
+.progress-text {
+  display: block;
+  text-align: center;
 }
 </style>
