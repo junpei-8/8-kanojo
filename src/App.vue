@@ -6,6 +6,7 @@ import OpeningScene from './fragments/scenes/OpeningScene.vue'
 import EndingScene from './fragments/scenes/EndingScene.vue'
 import GameButtons from './fragments/sections/GameButtons.vue'
 import KeyVisual from './fragments/sections/KeyVisual.vue'
+import ReasonSection from './fragments/sections/ReasonSection.vue'
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue'
 import GameFooter from './fragments/sections/GameFooter.vue'
 
@@ -76,6 +77,8 @@ function onProceed() {
       {{ gameState.currentAnomaly }}
 
       <KeyVisual />
+
+      <ReasonSection />
 
       <OtherKanojoSection
         :is-anomaly="gameState.currentAnomaly.id === 'otherKanojos'"
