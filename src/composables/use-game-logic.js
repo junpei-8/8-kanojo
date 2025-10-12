@@ -15,20 +15,29 @@ import { anomalies } from '../types/anomalies.js'
  * }}
  */
 export function useGameLogic() {
-  // 現在の異変コンポーネントを取得
+  /**
+   * 現在の異変コンポーネントを取得
+   * @type {import('vue').ComputedRef<import('vue').Component | null>}
+   */
   const currentAnomalyComponent = computed(() => {
     if (!gameState.value.currentAnomaly) return null
     const anomaly = anomalies.find(a => a.id === gameState.value.currentAnomaly)
     return anomaly?.component || null
   })
 
-  // ゲーム開始処理
+  /**
+   * ゲーム開始処理
+   * gameStartedをtrueにしてラウンドを開始する
+   */
   function startGame() {
     gameState.value.gameStarted = true
     startRound()
   }
 
-  // ラウンド開始処理
+  /**
+   * ラウンド開始処理
+   * 80%の確率で異変を表示し、使用済みでない異変をランダムに選択する
+   */
   function startRound() {
     // 80%の確率で異変を表示
     const shouldShowAnomaly = Math.random() < 0.8

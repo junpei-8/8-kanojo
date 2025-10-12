@@ -1,5 +1,16 @@
 <script setup>
-// テキスト異変: 通常とは異なるテキストを表示する
+/**
+ * テキスト異変: 通常とは異なるテキストを表示する
+ *
+ * Props:
+ * @property {string} [mode] - 異変のモード（将来の拡張用）
+ */
+defineProps({
+  mode: {
+    type: String,
+    default: ''
+  }
+})
 </script>
 
 <template>
