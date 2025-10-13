@@ -28,10 +28,7 @@ jobs:
           node-version: "20" # 使用する Node.js のバージョンを指定
 
       - name: Install dependencies (Clean Install) ✅
-        run: |
-          rm -f package-lock.json
-          rm -rf node_modules
-          npm install
+        run: npm install
 
       - name: Build project
         run: npm run build # プロジェクトのビルド (通常は vite build を実行)
