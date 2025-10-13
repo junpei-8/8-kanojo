@@ -7,7 +7,7 @@ import Comment from './fragments/anomalies/Comment.vue';
 import MojiBake from './fragments/anomalies/MojiBake.vue';
 import EndingScene from './fragments/scenes/EndingScene.vue';
 import OpeningScene from './fragments/scenes/OpeningScene.vue';
-import GameFooter from './fragments/sections/game-footer/GameFooter.vue';
+import GameFooter from './fragments/sections/GameFooter.vue';
 import KeyVisual from './fragments/sections/KeyVisual.vue';
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
 import ReasonSection from './fragments/sections/ReasonSection.vue';
