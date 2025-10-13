@@ -7,11 +7,11 @@ import Calling from './fragments/anomalies/Calling.vue';
 import Comment from './fragments/anomalies/Comment.vue';
 import MojiBake from './fragments/anomalies/MojiBake.vue';
 import WindowSpam from './fragments/anomalies/WindowSpam.vue';
-import EndingScene from './fragments/scenes/EndingScene.vue';
 import EndingChoiceScreen from './fragments/scenes/EndingChoiceScreen.vue';
+import EndingScene from './fragments/scenes/EndingScene.vue';
 import EndingVegetaScene from './fragments/scenes/EndingVegetaScene.vue';
-import VegetaEndingChoiceScreen from './fragments/scenes/VegetaEndingChoiceScreen.vue';
 import OpeningScene from './fragments/scenes/OpeningScene.vue';
+import VegetaEndingChoiceScreen from './fragments/scenes/VegetaEndingChoiceScreen.vue';
 import GameFooter from './fragments/sections/game-footer/GameFooter.vue';
 import KeyVisual from './fragments/sections/KeyVisual.vue';
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
@@ -48,27 +48,44 @@ function onProceed() {
 
 <template>
   <!-- オープニングシーン -->
-  <OpeningScene v-if="gameState.viewMode === 'opening'" :key="gameState.viewMode" />
+  <OpeningScene
+    v-if="gameState.viewMode === 'opening'"
+    :key="gameState.viewMode"
+  />
 
   <!-- エンディングシーン -->
-  <EndingScene v-if="gameState.viewMode === 'ending'" :key="gameState.viewMode" />
+  <EndingScene
+    v-if="gameState.viewMode === 'ending'"
+    :key="gameState.viewMode"
+  />
 
   <!-- エンディング選択画面 -->
-  <EndingChoiceScreen v-if="gameState.viewMode === 'endingChoice'" :key="gameState.viewMode" />
+  <EndingChoiceScreen
+    v-if="gameState.viewMode === 'endingChoice'"
+    :key="gameState.viewMode"
+  />
 
   <!-- ベジータエンディングシーン -->
-  <EndingVegetaScene v-if="gameState.viewMode === 'vegetaEnding'" :key="gameState.viewMode" />
+  <EndingVegetaScene
+    v-if="gameState.viewMode === 'vegetaEnding'"
+    :key="gameState.viewMode"
+  />
 
   <!-- ベジータエンディング選択画面 -->
-  <VegetaEndingChoiceScreen v-if="gameState.viewMode === 'vegetaEndingChoice'" :key="gameState.viewMode" />
+  <VegetaEndingChoiceScreen
+    v-if="gameState.viewMode === 'vegetaEndingChoice'"
+    :key="gameState.viewMode"
+  />
 
   <!-- ゲーム画面 -->
   <div class="game-view" v-if="gameState.viewMode === 'game'">
     <!-- ゲーム画面 -->
     <div class="game-content">
-      {{ gameState.currentAnomaly }}
-
       <KeyVisual />
+
+      <!-- <div class="debug-info">
+        {{ gameState.currentAnomaly }}
+      </div> -->
 
       <ReasonSection />
 
@@ -79,7 +96,12 @@ function onProceed() {
 
       <Calling v-if="gameState.currentAnomaly === 'calling'" />
 
-      <MojiBake v-if="gameState.currentAnomaly === 'mojibake' && !gameState.isResettingMojibake" />
+      <MojiBake
+        v-if="
+          gameState.currentAnomaly === 'mojibake' &&
+          !gameState.isResettingMojibake
+        "
+      />
 
       <AdBanner v-if="gameState.currentAnomaly === 'adBanner'" />
 
@@ -107,5 +129,9 @@ function onProceed() {
 }
 .game-content {
   margin: auto;
+}
+.debug-info {
+  margin: 24px;
+  text-align: center;
 }
 </style>
