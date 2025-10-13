@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import GirlfriendEndingImage1 from '../../assets/girlfriend/ending-1.png';
 import GirlfriendEndingImage2 from '../../assets/girlfriend/ending-2.png';
 import TalkBox from '../../components/TalkBox.vue';
+import { gameState } from '../../store/game-store.js';
 
 const TEXTS = [
   `俺はついにしずこと別れることが出来た。\n正直未練がないかと言われると嘘になる。`,
@@ -21,7 +22,12 @@ const currentIndex = ref(0);
 const currentText = computed(() => TEXTS[currentIndex.value]);
 
 const next = () => {
-  currentIndex.value = currentIndex.value + 1;
+  if (currentIndex.value < TEXTS.length - 1) {
+    currentIndex.value = currentIndex.value + 1;
+  } else {
+    // 最後のテキストの後、選択画面を表示
+    gameState.value.viewMode = 'endingChoice';
+  }
 };
 </script>
 

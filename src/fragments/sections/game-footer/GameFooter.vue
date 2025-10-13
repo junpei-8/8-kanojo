@@ -104,7 +104,7 @@ function handleProceedHover() {
     <div class="progress-bar-wrapper">
       <div v-for="n in 8" :key="n" class="progress-segment"></div>
       <div class="progress-bar" :style="{ width: `${props.progress}%` }"></div>
-      <span class="progress-text">{{ props.isLastStage ? 8 : props.currentStage }} / 8</span>
+      <span class="progress-text">{{ props.currentStage }} / 8</span>
     </div>
   </div>
 </template>
@@ -145,8 +145,7 @@ button.action-btn:last-child:hover {
 
 /* ボタンが避ける動作 */
 button.action-btn.is-dodging {
-  animation: dodgeAnimation 0.6s ease-out;
-  pointer-events: none;
+  animation: dodgeAnimation 0.6s ease-out forwards;
 }
 
 @keyframes dodgeAnimation {
@@ -157,10 +156,10 @@ button.action-btn.is-dodging {
     transform: translateX(120px) scale(1.07);
   }
   70% {
-    transform: translateX(-40px) scale(1.07);
+    transform: translateX(120px) scale(1.07);
   }
   100% {
-    transform: translateX(0) scale(1);
+    transform: translateX(120px) scale(1);
   }
 }
 

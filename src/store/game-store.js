@@ -3,14 +3,16 @@ import { useAudioManager } from '../composables/use-audio-manager.js';
 
 /**
  * ゲーム状態。
+ * @typedef {'opening' | 'game' | 'ending' | 'endingChoice' | 'vegetaEnding' | 'vegetaEndingChoice'} ViewMode
  */
 export const gameState = ref({
-  gameStarted: false,
+  /** @type {ViewMode} */
+  viewMode: 'opening',
   currentStage: 0,
   usedAnomalies: [],
   currentAnomaly: null,
-  isCleared: false,
   isResettingMojibake: false,
+  windowSpamTriggered: false,
 });
 
 // 音声管理のインスタンスを取得
@@ -62,12 +64,12 @@ export function resetGame() {
   cleanupCurrentAnomaly();
 
   gameState.value = {
-    gameStarted: true,
+    viewMode: 'game',
     currentStage: 0,
     usedAnomalies: [],
     currentAnomaly: null,
-    isCleared: false,
     isResettingMojibake: false,
+    windowSpamTriggered: false,
   };
 }
 
@@ -84,11 +86,11 @@ export async function hardResetGame() {
   cleanupCurrentAnomaly();
 
   gameState.value = {
-    gameStarted: true,
+    viewMode: 'game',
     currentStage: 0,
     usedAnomalies: [],
     currentAnomaly: null,
-    isCleared: false,
     isResettingMojibake: false,
+    windowSpamTriggered: false,
   };
 }

@@ -24,17 +24,14 @@ export function useGameFooterDodge() {
 
   /**
    * 進むボタンにホバーしたときのハンドラー
-   * 1回だけボタンが避ける動作をする
+   * 1回だけボタンが避ける動作をし、そのままの位置を保持する
    */
   function handleDodgeHover() {
     if (!hasDodged.value) {
       isDodging.value = true;
       hasDodged.value = true;
 
-      // アニメーション終了後（600ms）にisDodgingをリセット
-      setTimeout(() => {
-        isDodging.value = false;
-      }, 600);
+      // 一度避けたらそのままの位置を保持（リセットしない）
     }
   }
 

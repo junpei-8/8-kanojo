@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import GirlfriendEndingImage1 from '../../assets/ending-vegeta/ending-1.png';
 import GirlfriendEndingImage2 from '../../assets/ending-vegeta/ending-2.png';
+import { gameState } from '../../store/game-store.js';
 
 // const TEXTS = [
 //   `――あれから30年後…`,
@@ -51,7 +52,12 @@ const currentIndex = ref(0);
 const currentText = computed(() => TEXTS[currentIndex.value]);
 
 const next = () => {
-  currentIndex.value = currentIndex.value + 1;
+  if (currentIndex.value < TEXTS.length - 1) {
+    currentIndex.value = currentIndex.value + 1;
+  } else {
+    // 最後のテキストの後、選択画面を表示
+    gameState.value.viewMode = 'vegetaEndingChoice';
+  }
 };
 </script>
 

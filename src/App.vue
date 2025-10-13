@@ -6,7 +6,11 @@ import BrokenGlass from './fragments/anomalies/BrokenGlass.vue';
 import Calling from './fragments/anomalies/Calling.vue';
 import Comment from './fragments/anomalies/Comment.vue';
 import MojiBake from './fragments/anomalies/MojiBake.vue';
+import WindowSpam from './fragments/anomalies/WindowSpam.vue';
 import EndingScene from './fragments/scenes/EndingScene.vue';
+import EndingChoiceScreen from './fragments/scenes/EndingChoiceScreen.vue';
+import EndingVegetaScene from './fragments/scenes/EndingVegetaScene.vue';
+import VegetaEndingChoiceScreen from './fragments/scenes/VegetaEndingChoiceScreen.vue';
 import OpeningScene from './fragments/scenes/OpeningScene.vue';
 import GameFooter from './fragments/sections/game-footer/GameFooter.vue';
 import KeyVisual from './fragments/sections/KeyVisual.vue';
@@ -21,7 +25,7 @@ const { handleAnswer, startRound, footerMode } = useGameLogic();
  *
  * @type {import('vue').ComputedRef<boolean>}
  */
-const isLastStage = computed(() => gameState.value.currentStage === 7);
+const isLastStage = computed(() => gameState.value.currentStage === 8);
 
 /**
  * 戻るボタンのクリックハンドラー。
@@ -44,13 +48,22 @@ function onProceed() {
 
 <template>
   <!-- オープニングシーン -->
-  <OpeningScene v-if="!gameState.gameStarted" />
+  <OpeningScene v-if="gameState.viewMode === 'opening'" :key="gameState.viewMode" />
 
   <!-- エンディングシーン -->
-  <EndingScene v-if="gameState.isCleared" />
+  <EndingScene v-if="gameState.viewMode === 'ending'" :key="gameState.viewMode" />
+
+  <!-- エンディング選択画面 -->
+  <EndingChoiceScreen v-if="gameState.viewMode === 'endingChoice'" :key="gameState.viewMode" />
+
+  <!-- ベジータエンディングシーン -->
+  <EndingVegetaScene v-if="gameState.viewMode === 'vegetaEnding'" :key="gameState.viewMode" />
+
+  <!-- ベジータエンディング選択画面 -->
+  <VegetaEndingChoiceScreen v-if="gameState.viewMode === 'vegetaEndingChoice'" :key="gameState.viewMode" />
 
   <!-- ゲーム画面 -->
-  <div class="game-view" v-if="gameState.gameStarted">
+  <div class="game-view" v-if="gameState.viewMode === 'game'">
     <!-- ゲーム画面 -->
     <div class="game-content">
       {{ gameState.currentAnomaly }}
@@ -72,10 +85,12 @@ function onProceed() {
 
       <Comment v-if="gameState.currentAnomaly === 'comment'" />
 
+      <WindowSpam v-if="gameState.currentAnomaly === 'windowSpam'" />
+
       <GameFooter
         :is-last-stage="isLastStage"
         :mode="footerMode"
-        :progress="((isLastStage ? 8 : gameState.currentStage) / 8) * 100"
+        :progress="(gameState.currentStage / 8) * 100"
         :current-stage="gameState.currentStage"
         @go-back="onGoBack"
         @proceed="onProceed"

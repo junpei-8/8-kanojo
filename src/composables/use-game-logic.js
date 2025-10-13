@@ -49,10 +49,10 @@ export function useGameLogic() {
 
   /**
    * ゲーム開始処理
-   * gameStartedをtrueにしてラウンドを開始する
+   * viewModeを'game'に設定してラウンドを開始する
    */
   function startGame() {
-    gameState.value.gameStarted = true;
+    gameState.value.viewMode = 'game';
     startRound();
   }
 
@@ -67,7 +67,7 @@ export function useGameLogic() {
     // 最初のラウンド（0/8）と最終ステージ（8/8）では必ず異変なし
     if (
       gameState.value.currentStage === 0 ||
-      gameState.value.currentStage === 7
+      gameState.value.currentStage === 8
     ) {
       gameState.value.currentAnomaly = null;
       return;
@@ -117,8 +117,8 @@ export function useGameLogic() {
       gameState.value.currentStage++;
 
       // クリア判定
-      if (gameState.value.currentStage >= 8) {
-        gameState.value.isCleared = true;
+      if (gameState.value.currentStage >= 9) {
+        gameState.value.viewMode = 'ending';
         gameState.value.currentAnomaly = null;
       } else {
         // 次のラウンドを開始
