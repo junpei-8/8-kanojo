@@ -1,22 +1,29 @@
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { useGameFooterDodge } from './use-game-footer-dodge.js';
+import { useGameFooterWindowSpam } from './use-game-footer-window-spam.js';
 
 /**
  * Props定義
  * @property {boolean} isLastStage - 最終ステージ（8回目）かどうか
- * @property {boolean} dodgeMode - ボタンが避けるモードかどうか
+ * @property {string} mode - 異変モード ('dodge' | 'window-spam' | '')
  * @property {number} progress - 進行度（0〜100の数値）
+ * @property {number} currentStage - 現在のステージ番号（1〜8）
  */
 const props = defineProps({
   isLastStage: {
     type: Boolean,
     default: false,
   },
-  dodgeMode: {
-    type: Boolean,
-    default: false,
+  mode: {
+    type: String,
+    default: '',
   },
   progress: {
+    type: Number,
+    required: true,
+  },
+  currentStage: {
     type: Number,
     required: true,
   },
@@ -27,17 +34,18 @@ const props = defineProps({
  */
 const emit = defineEmits(['goBack', 'proceed']);
 
-/**
- * ボタンが既に避けたかどうかのフラグ
- * @type {import('vue').Ref<boolean>}
- */
-const hasDodged = ref(false);
+// モードに応じて必要なコンポーザブルのみ呼び出し
+const dodgeHandlers = props.mode === 'dodge' ? useGameFooterDodge() : null;
+const windowSpamHandlers =
+  props.mode === 'window-spam' ? useGameFooterWindowSpam() : null;
 
 /**
- * ボタンが避けている状態かどうか
- * @type {import('vue').Ref<boolean>}
+ * モードに応じたisDodging状態を返す
+ * @type {import('vue').ComputedRef<boolean>}
  */
-const isDodging = ref(false);
+const isDodging = computed(() => {
+  return dodgeHandlers?.isDodging.value ?? false;
+});
 
 /**
  * 戻るボタンのクリックハンドラー
@@ -48,18 +56,27 @@ function handleGoBack() {
 
 /**
  * 進むボタンのクリックハンドラー
+ * モードに応じて特殊処理を実行
  */
 function handleProceed() {
+  // window-spam異変の場合、特殊処理を実行
+  if (windowSpamHandlers) {
+    const shouldContinue = windowSpamHandlers.handleWindowSpamProceed();
+    if (!shouldContinue) {
+      return;
+    }
+  }
+
+  // 通常の処理
   emit('proceed');
 }
 
 /**
- * 進むボタンにホバーしたときのハンドラー（dodgeMode時のみ）
+ * 進むボタンにホバーしたときのハンドラー
  */
 function handleProceedHover() {
-  if (props.dodgeMode && !hasDodged.value) {
-    isDodging.value = true;
-    hasDodged.value = true;
+  if (dodgeHandlers) {
+    dodgeHandlers.handleDodgeHover();
   }
 }
 </script>
@@ -77,6 +94,7 @@ function handleProceedHover() {
       <button class="action-btn" @click="handleGoBack">キャンセル</button>
       <button
         class="action-btn"
+        :class="{ 'is-dodging': isDodging }"
         @click="handleProceed"
         @mouseenter="handleProceedHover"
       >
@@ -87,7 +105,7 @@ function handleProceedHover() {
     <div class="progress-bar-wrapper">
       <div v-for="n in 8" :key="n" class="progress-segment"></div>
       <div class="progress-bar" :style="{ width: `${props.progress}%` }"></div>
-      <span class="progress-text">{{ props.progress }} / 8</span>
+      <span class="progress-text">{{ props.isLastStage ? 8 : props.currentStage }} / 8</span>
     </div>
   </div>
 </template>
@@ -124,6 +142,27 @@ button.action-btn:last-child:hover {
   background: linear-gradient(90deg, #e53935 0%, #ff7043 100%);
   color: #fff;
   border-color: #e53935;
+}
+
+/* ボタンが避ける動作 */
+button.action-btn.is-dodging {
+  animation: dodgeAnimation 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes dodgeAnimation {
+  0% {
+    transform: translateX(0) scale(1);
+  }
+  30% {
+    transform: translateX(120px) scale(1.07);
+  }
+  70% {
+    transform: translateX(-40px) scale(1.07);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+  }
 }
 
 .progress-segment:last-child {

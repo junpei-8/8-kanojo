@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
+import { resetGame } from '../../store/game-store.js';
 const selectedReasons = ref([]);
 
 const handleCheckboxChange = (event) => {
@@ -18,7 +19,8 @@ watch(
   selectedReasons,
   (newValue) => {
     if (newValue.length >= 3) {
-      window.location.href = '/';
+      resetGame();
+      window.scrollTo(0, 0);
     }
   },
   { deep: true },
