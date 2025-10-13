@@ -34,17 +34,16 @@ const props = defineProps({
  */
 const emit = defineEmits(['goBack', 'proceed']);
 
-// モードに応じて必要なコンポーザブルのみ呼び出し
-const dodgeHandlers = props.mode === 'dodge' ? useGameFooterDodge() : null;
-const windowSpamHandlers =
-  props.mode === 'window-spam' ? useGameFooterWindowSpam() : null;
+// コンポーザブルを常に呼び出し（モードは動的に変わるため）
+const dodgeHandlers = useGameFooterDodge();
+const windowSpamHandlers = useGameFooterWindowSpam();
 
 /**
  * モードに応じたisDodging状態を返す
  * @type {import('vue').ComputedRef<boolean>}
  */
 const isDodging = computed(() => {
-  return dodgeHandlers?.isDodging.value ?? false;
+  return props.mode === 'dodge' ? dodgeHandlers.isDodging.value : false;
 });
 
 /**
@@ -60,7 +59,7 @@ function handleGoBack() {
  */
 function handleProceed() {
   // window-spam異変の場合、特殊処理を実行
-  if (windowSpamHandlers) {
+  if (props.mode === 'window-spam') {
     const shouldContinue = windowSpamHandlers.handleWindowSpamProceed();
     if (!shouldContinue) {
       return;
@@ -75,7 +74,7 @@ function handleProceed() {
  * 進むボタンにホバーしたときのハンドラー
  */
 function handleProceedHover() {
-  if (dodgeHandlers) {
+  if (props.mode === 'dodge') {
     dodgeHandlers.handleDodgeHover();
   }
 }
