@@ -22,10 +22,10 @@ const currentIndex = ref(0);
 const currentText = computed(() => TEXTS[currentIndex.value]);
 
 const next = () => {
-  if (currentIndex.value < TEXTS.length - 1) {
+  if (currentIndex.value < TEXTS.length) {
     currentIndex.value = currentIndex.value + 1;
   } else {
-    // 最後のテキストの後、選択画面を表示
+    // 最後の画像の後、選択画面を表示
     gameState.value.viewMode = 'endingChoice';
   }
 };
@@ -45,7 +45,7 @@ const next = () => {
       alt=""
       :data-show="currentIndex >= TEXTS.length"
     />
-    <TalkBox v-if="currentText">
+    <TalkBox v-if="currentIndex < TEXTS.length">
       {{ currentText }}
     </TalkBox>
   </div>
