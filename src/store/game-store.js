@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useAudioManager } from '../composables/use-audio-manager.js';
 
 /**
@@ -10,6 +10,7 @@ export const gameState = ref({
   usedAnomalies: [],
   currentAnomaly: null,
   isCleared: false,
+  isResettingMojibake: false,
 });
 
 // 音声管理のインスタンスを取得
@@ -53,7 +54,7 @@ export function cleanupCurrentAnomaly() {
 }
 
 /**
- * ゲーム状態を初期化する。
+ * ゲーム状態を初期化する（同期）。
  * ゲーム画面を維持したまま、カウントと異変をリセットする。
  */
 export function resetGame() {
@@ -66,5 +67,28 @@ export function resetGame() {
     usedAnomalies: [],
     currentAnomaly: null,
     isCleared: false,
+    isResettingMojibake: false,
+  };
+}
+
+/**
+ * ゲーム状態を強制的に初期化する（非同期）。
+ * DOM直接操作している異変用。一瞬コンポーネントをアンマウントしてからリセットする。
+ */
+export async function hardResetGame() {
+  // 一瞬非表示にしてコンポーネントを強制アンマウント
+  gameState.value.isResettingMojibake = true;
+  await nextTick();
+
+  // 現在の異変をクリーンアップ
+  cleanupCurrentAnomaly();
+
+  gameState.value = {
+    gameStarted: true,
+    currentStage: 0,
+    usedAnomalies: [],
+    currentAnomaly: null,
+    isCleared: false,
+    isResettingMojibake: false,
   };
 }

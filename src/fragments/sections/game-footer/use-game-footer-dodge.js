@@ -30,6 +30,11 @@ export function useGameFooterDodge() {
     if (!hasDodged.value) {
       isDodging.value = true;
       hasDodged.value = true;
+
+      // アニメーション終了後（600ms）にisDodgingをリセット
+      setTimeout(() => {
+        isDodging.value = false;
+      }, 600);
     }
   }
 
