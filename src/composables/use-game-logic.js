@@ -2,6 +2,7 @@ import { computed } from 'vue';
 import {
   gameState,
   resetGame,
+  hardResetGame,
   cleanupCurrentAnomaly,
 } from '../store/game-store.js';
 import { anomalies } from '../types/anomalies.js';
@@ -29,6 +30,21 @@ export function useGameLogic() {
       (a) => a.id === gameState.value.currentAnomaly,
     );
     return anomaly?.component || null;
+  });
+
+  /**
+   * GameFooter のモード（異変に応じて変化）
+   * @type {import('vue').ComputedRef<string>}
+   */
+  const footerMode = computed(() => {
+    switch (gameState.value.currentAnomaly) {
+      case 'buttonDodge':
+        return 'dodge';
+      case 'windowSpam':
+        return 'window-spam';
+      default:
+        return '';
+    }
   });
 
   /**
@@ -86,7 +102,7 @@ export function useGameLogic() {
    * 回答判定処理
    * @param {boolean} goBack - 戻るボタンを押したかどうか
    */
-  function handleAnswer(goBack) {
+  async function handleAnswer(goBack) {
     const hasAnomaly = gameState.value.currentAnomaly !== null;
     const isCorrect = (hasAnomaly && goBack) || (!hasAnomaly && !goBack);
 
@@ -111,7 +127,12 @@ export function useGameLogic() {
     } else {
       // 不正解の場合（ゲームオーバー）
       // ゲーム画面は維持したまま、カウントを0に戻してページトップへ
-      resetGame();
+      // mojibake異変の場合はDOM操作をクリーンアップするためhardResetを使用
+      if (gameState.value.currentAnomaly === 'mojibake') {
+        await hardResetGame();
+      } else {
+        resetGame();
+      }
       window.scrollTo(0, 0);
       startRound();
     }
@@ -120,6 +141,7 @@ export function useGameLogic() {
   return {
     gameState,
     currentAnomalyComponent,
+    footerMode,
     startGame,
     startRound,
     handleAnswer,

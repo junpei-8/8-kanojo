@@ -1,19 +1,20 @@
 <script setup>
 import { computed } from 'vue';
 import { useGameLogic } from './composables/use-game-logic.js';
+import AdBanner from './fragments/anomalies/AdBanner.vue';
 import BrokenGlass from './fragments/anomalies/BrokenGlass.vue';
 import Calling from './fragments/anomalies/Calling.vue';
 import Comment from './fragments/anomalies/Comment.vue';
 import MojiBake from './fragments/anomalies/MojiBake.vue';
 import EndingScene from './fragments/scenes/EndingScene.vue';
 import OpeningScene from './fragments/scenes/OpeningScene.vue';
-import GameFooter from './fragments/sections/GameFooter.vue';
+import GameFooter from './fragments/sections/game-footer/GameFooter.vue';
 import KeyVisual from './fragments/sections/KeyVisual.vue';
 import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
 import ReasonSection from './fragments/sections/ReasonSection.vue';
 import { gameState } from './store/game-store.js';
 
-const { handleAnswer, startRound } = useGameLogic();
+const { handleAnswer, startRound, footerMode } = useGameLogic();
 
 /**
  * 最終ステージ（8回目）かどうか。
@@ -21,22 +22,6 @@ const { handleAnswer, startRound } = useGameLogic();
  * @type {import('vue').ComputedRef<boolean>}
  */
 const isLastStage = computed(() => gameState.value.currentStage === 7);
-
-/**
- * GameFooterのモード（異変に応じて変化）
- *
- * @type {import('vue').ComputedRef<string>}
- */
-const footerMode = computed(() => {
-  switch (gameState.value.currentAnomaly) {
-    case 'buttonDodge':
-      return 'dodge';
-    case 'windowSpam':
-      return 'window-spam';
-    default:
-      return '';
-  }
-});
 
 /**
  * 戻るボタンのクリックハンドラー。
@@ -81,7 +66,9 @@ function onProceed() {
 
       <Calling v-if="gameState.currentAnomaly === 'calling'" />
 
-      <MojiBake v-if="gameState.currentAnomaly === 'mojibake'" />
+      <MojiBake v-if="gameState.currentAnomaly === 'mojibake' && !gameState.isResettingMojibake" />
+
+      <AdBanner v-if="gameState.currentAnomaly === 'adBanner'" />
 
       <Comment v-if="gameState.currentAnomaly === 'comment'" />
 
