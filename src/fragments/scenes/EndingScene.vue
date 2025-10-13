@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import GirlfriendEndingImage1 from '../../assets/girlfriend/ending-1.png';
 import GirlfriendEndingImage2 from '../../assets/girlfriend/ending-2.png';
 
@@ -53,9 +53,6 @@ const next = () => {
   height: 100%;
   background-color: #000;
   z-index: 9999;
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.8;
 }
 
 .talk-box {

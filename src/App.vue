@@ -1,18 +1,17 @@
 <script setup>
 import { computed } from 'vue';
-import { gameState, resetGame } from './store/game-store.js';
 import { useGameLogic } from './composables/use-game-logic.js';
-import OpeningScene from './fragments/scenes/OpeningScene.vue';
-import EndingScene from './fragments/scenes/EndingScene.vue';
-import GameButtons from './fragments/sections/GameButtons.vue';
-import KeyVisual from './fragments/sections/KeyVisual.vue';
-import ReasonSection from './fragments/sections/ReasonSection.vue';
-import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
-import Calling from './fragments/anomalies/Calling.vue';
 import BrokenGlass from './fragments/anomalies/BrokenGlass.vue';
-import MojiBake from './fragments/anomalies/MojiBake.vue';
+import Calling from './fragments/anomalies/Calling.vue';
 import Comment from './fragments/anomalies/Comment.vue';
+import MojiBake from './fragments/anomalies/MojiBake.vue';
+import EndingScene from './fragments/scenes/EndingScene.vue';
+import OpeningScene from './fragments/scenes/OpeningScene.vue';
 import GameFooter from './fragments/sections/GameFooter.vue';
+import KeyVisual from './fragments/sections/KeyVisual.vue';
+import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
+import ReasonSection from './fragments/sections/ReasonSection.vue';
+import { gameState, resetGame } from './store/game-store.js';
 
 const { handleAnswer, startRound } = useGameLogic();
 

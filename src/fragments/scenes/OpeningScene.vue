@@ -1,7 +1,30 @@
 <script setup>
+import { computed, ref } from 'vue';
+import TalkBox from '../../components/TalkBox.vue';
 import { useGameLogic } from '../../composables/use-game-logic.js';
 
 const { startGame } = useGameLogic();
+
+const TEXTS = [
+  '俺は通帳の残高を見て愕然とした、、、',
+  '「なんで俺は、、、」',
+  'わかっている、レンタル彼女なんかに本物の恋愛なんてないことは、、、',
+  'すべての元凶はこの女だ、名前は「八村しずこ」',
+  '認めたくないが、とても可愛い\nそしてその内面は優しく俺のことをいつも励ましてくれる。',
+  '彼女との時間は本当に楽しい、一緒にいる時間は全てを忘れられる\n月々8800円だと思えば安いのかもしれない、、、',
+  'でも俺は本当に自分と向き合ってくれるようなパートナーが欲しい、\nそう決断し俺は解約ページにまで進んだ'
+]
+
+const currentIndex = ref(0);
+const currentText = computed(() => TEXTS[currentIndex.value]);
+
+const next = () => {
+  currentIndex.value = currentIndex.value + 1;
+  if (currentIndex.value >= TEXTS.length) {
+    // 全て表示し終わったらゲーム開始
+    onStart();
+  }
+};
 
 /**
  * ゲームを開始する
@@ -13,26 +36,11 @@ function onStart() {
 </script>
 
 <template>
-  <div class="opening-overlay">
-    <div class="opening-content">
-      <h1 class="game-title">8番彼女</h1>
-      <div class="game-description">
-        <p class="description-text">
-          レンタル彼女サービスの解約ページに<br />
-          <strong>異変</strong>が表示されることがあります。
-        </p>
-        <div class="rules">
-          <h2 class="rules-title">ゲームルール</h2>
-          <ul class="rules-list">
-            <li><strong>異変がある場合</strong> → 「戻る」ボタンを押す</li>
-            <li><strong>異変がない場合</strong> → 「進む」ボタンを押す</li>
-            <li>間違えるとカウントが0に戻ります</li>
-            <li>8回連続で正解するとゲームクリア！</li>
-          </ul>
-        </div>
-      </div>
-      <button @click="onStart" class="start-button">ゲームスタート</button>
-    </div>
+  <div class="opening-overlay" @click="next">
+    <img class="photo" src="/img/kanojo/shizuko.png" alt="" :data-show="currentIndex >= 3">
+    <TalkBox>
+      {{ currentText }}
+    </TalkBox>
   </div>
 </template>
 
@@ -43,158 +51,19 @@ function onStart() {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 107, 157, 0.95) 0%,
-    rgba(255, 182, 193, 0.95) 100%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  animation: fadeIn 0.5s ease;
+  background-color: #000;
 }
 
-.opening-content {
-  background: white;
-  padding: 60px 50px;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  max-width: 600px;
-  animation: slideUp 0.6s ease;
+.photo {
+  position: fixed;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  opacity: 0;
 }
-
-.game-title {
-  font-size: 48px;
-  color: #ff6b9d;
-  margin-bottom: 30px;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.game-description {
-  margin-bottom: 40px;
-}
-
-.description-text {
-  font-size: 18px;
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 30px;
-}
-
-.rules {
-  background: #f9f9f9;
-  border-radius: 12px;
-  padding: 25px;
-  text-align: left;
-}
-
-.rules-title {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 15px;
-  text-align: center;
-  font-weight: bold;
-}
-
-.rules-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.rules-list li {
-  font-size: 16px;
-  color: #555;
-  line-height: 2;
-  padding-left: 25px;
-  position: relative;
-}
-
-.rules-list li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: #ff6b9d;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.start-button {
-  padding: 18px 60px;
-  font-size: 20px;
-  font-weight: bold;
-  background: #ff6b9d;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
-}
-
-.start-button:hover {
-  background: #ff5a8d;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
-}
-
-.start-button:active {
-  transform: translateY(-1px);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 640px) {
-  .opening-content {
-    padding: 40px 30px;
-    margin: 20px;
-  }
-
-  .game-title {
-    font-size: 36px;
-  }
-
-  .description-text {
-    font-size: 16px;
-  }
-
-  .rules {
-    padding: 20px;
-  }
-
-  .rules-title {
-    font-size: 18px;
-  }
-
-  .rules-list li {
-    font-size: 14px;
-  }
-
-  .start-button {
-    padding: 15px 50px;
-    font-size: 18px;
-  }
+.photo[data-show='true'] {
+  opacity: 1;
+  transition: opacity 1s ease-in;
 }
 </style>
