@@ -1,5 +1,11 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import OtherKanojoSrc1 from '../../assets/other-kanojo/img1.png';
+import OtherKanojoSrc2 from '../../assets/other-kanojo/img2.png';
+import OtherKanojoSrc3 from '../../assets/other-kanojo/img3.png';
+import OtherKanojoSrc4 from '../../assets/other-kanojo/img4.png';
+import OtherKanojoSrc5 from '../../assets/other-kanojo/img5.png';
+import OtherKanojoSrc6 from '../../assets/other-kanojo/img6.png';
 
 const props = defineProps({
   isAnomaly: {
@@ -9,12 +15,12 @@ const props = defineProps({
 });
 
 const images = [
-  '/img/other-kanojo/img1.png',
-  '/img/other-kanojo/img2.png',
-  '/img/other-kanojo/img3.png',
-  '/img/other-kanojo/img4.png',
-  '/img/other-kanojo/img5.png',
-  '/img/other-kanojo/img6.png',
+  OtherKanojoSrc1,
+  OtherKanojoSrc2,
+  OtherKanojoSrc3,
+  OtherKanojoSrc4,
+  OtherKanojoSrc5,
+  OtherKanojoSrc6
 ];
 
 const position = ref(0);
