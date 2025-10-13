@@ -1,18 +1,17 @@
 <script setup>
 import { computed } from 'vue';
-import { gameState, resetGame } from './store/game-store.js';
 import { useGameLogic } from './composables/use-game-logic.js';
-import OpeningScene from './fragments/scenes/OpeningScene.vue';
-import EndingScene from './fragments/scenes/EndingScene.vue';
-import GameButtons from './fragments/sections/GameButtons.vue';
-import KeyVisual from './fragments/sections/KeyVisual.vue';
-import ReasonSection from './fragments/sections/ReasonSection.vue';
-import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
-import Calling from './fragments/anomalies/Calling.vue';
 import BrokenGlass from './fragments/anomalies/BrokenGlass.vue';
-import MojiBake from './fragments/anomalies/MojiBake.vue';
+import Calling from './fragments/anomalies/Calling.vue';
 import Comment from './fragments/anomalies/Comment.vue';
-import GameFooter from './fragments/sections/GameFooter.vue';
+import MojiBake from './fragments/anomalies/MojiBake.vue';
+import EndingScene from './fragments/scenes/EndingScene.vue';
+import OpeningScene from './fragments/scenes/OpeningScene.vue';
+import GameFooter from './fragments/sections/game-footer/GameFooter.vue';
+import KeyVisual from './fragments/sections/KeyVisual.vue';
+import OtherKanojoSection from './fragments/sections/OtherKanojoSection.vue';
+import ReasonSection from './fragments/sections/ReasonSection.vue';
+import { gameState } from './store/game-store.js';
 
 const { handleAnswer, startRound } = useGameLogic();
 
@@ -24,13 +23,20 @@ const { handleAnswer, startRound } = useGameLogic();
 const isLastStage = computed(() => gameState.value.currentStage === 7);
 
 /**
- * ボタンが避けるモードかどうか（buttonDodge異変時）
+ * GameFooterのモード（異変に応じて変化）
  *
- * @type {import('vue').ComputedRef<boolean>}
+ * @type {import('vue').ComputedRef<string>}
  */
-const dodgeMode = computed(
-  () => gameState.value.currentAnomaly === 'buttonDodge',
-);
+const footerMode = computed(() => {
+  switch (gameState.value.currentAnomaly) {
+    case 'buttonDodge':
+      return 'dodge';
+    case 'windowSpam':
+      return 'window-spam';
+    default:
+      return '';
+  }
+});
 
 /**
  * 戻るボタンのクリックハンドラー。
@@ -43,27 +49,9 @@ function onGoBack() {
 
 /**
  * 進むボタンのクリックハンドラー。
- * windowSpam異変時は特殊処理を実行。
- * それ以外はページトップにスクロールしてから処理を実行。
+ * ページトップにスクロールしてから処理を実行。
  */
 function onProceed() {
-  // windowSpam異変の場合、confirmを表示してOKならリセット
-  if (gameState.value.currentAnomaly === 'windowSpam') {
-    if (confirm('本当に進みますか？')) {
-      if (confirm('確認：本当に解約手続きを進めますか？')) {
-        // OKを押した = 失敗（異変があるのに進んだ）
-        window.scrollTo(0, 0);
-        resetGame();
-        startRound();
-        return;
-      }
-    }
-
-    // キャンセルした場合は何もしない（正解は「戻る」ボタン）
-    return;
-  }
-
-  // 通常の処理
   window.scrollTo(0, 0);
   handleAnswer(false);
 }
@@ -99,8 +87,9 @@ function onProceed() {
 
       <GameFooter
         :is-last-stage="isLastStage"
-        :dodge-mode="dodgeMode"
-        :progress="(gameState.currentStage / 7) * 100"
+        :mode="footerMode"
+        :progress="((isLastStage ? 8 : gameState.currentStage) / 8) * 100"
+        :current-stage="gameState.currentStage"
         @go-back="onGoBack"
         @proceed="onProceed"
       />

@@ -1,60 +1,74 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useAudioManager } from '../../composables/use-audio-manager.js';
+import { registerCleanup } from '../../store/game-store.js';
+
+// 音声管理
+const { playAudio, removeAudio } = useAudioManager();
 
 // Line電話通知の状態管理
 const showLineCall = ref(false);
-const lineCallTimer = ref(null);
 const callState = ref('idle'); // 'idle', 'incoming', 'connected', 'ended'
 const showCallScreen = ref(false);
 
-// 音声再生の管理
+// 音声参照の管理
 const ringtoneAudio = ref(null);
 const recordingAudio = ref(null);
-const isPlayingRingtone = ref(false);
-const isPlayingRecording = ref(false);
+
+// タイマーIDを管理するSet
+const activeTimers = new Set();
 
 // 固定画像の管理
 const profileSection = ref(null);
 
-// 音声ファイルの初期化
-const initializeAudio = () => {
-  // 着信音の初期化
-  ringtoneAudio.value = new Audio('/audio/line.mp3');
-  ringtoneAudio.value.loop = true;
-  ringtoneAudio.value.volume = 0.7;
+// タイマーを登録して管理
+const addTimer = (timerId) => {
+  activeTimers.add(timerId);
+  return timerId;
+};
 
-  // 録音内容の初期化
-  recordingAudio.value = new Audio('/audio/yakusoku.mp3');
-  recordingAudio.value.volume = 0.8;
+// タイマーをクリア
+const clearTimer = (timerId) => {
+  if (timerId) {
+    clearTimeout(timerId);
+    activeTimers.delete(timerId);
+  }
+};
+
+// 全てのタイマーをクリア
+const clearAllTimers = () => {
+  activeTimers.forEach((timerId) => clearTimeout(timerId));
+  activeTimers.clear();
 };
 
 // 着信音を再生する関数
 const playRingtone = () => {
-  if (ringtoneAudio.value && !isPlayingRingtone.value) {
-    ringtoneAudio.value.play();
-    isPlayingRingtone.value = true;
+  if (!ringtoneAudio.value) {
+    ringtoneAudio.value = playAudio('/audio/line.mp3', {
+      loop: true,
+      volume: 0.7,
+    });
   }
 };
 
 // 着信音を停止する関数
 const stopRingtone = () => {
-  if (ringtoneAudio.value && isPlayingRingtone.value) {
-    ringtoneAudio.value.pause();
-    ringtoneAudio.value.currentTime = 0;
-    isPlayingRingtone.value = false;
+  if (ringtoneAudio.value) {
+    removeAudio(ringtoneAudio.value);
+    ringtoneAudio.value = null;
   }
 };
 
 // 録音内容を再生する関数
 const playRecording = () => {
-  if (recordingAudio.value && !isPlayingRecording.value) {
-    recordingAudio.value.play();
-    isPlayingRecording.value = true;
-
-    // 録音終了時の処理
-    recordingAudio.value.onended = () => {
-      isPlayingRecording.value = false;
-    };
+  if (!recordingAudio.value) {
+    recordingAudio.value = playAudio('/audio/yakusoku.mp3', {
+      volume: 0.8,
+      onEnded: () => {
+        recordingAudio.value = null;
+        endCall();
+      },
+    });
   }
 };
 
@@ -63,18 +77,20 @@ const scheduleLineCall = () => {
   // 1秒から6秒の間でランダムな時間を生成
   const randomTime = Math.floor(Math.random() * 5000) + 1000; // 1000ms = 1秒, 6000ms = 6秒
 
-  lineCallTimer.value = setTimeout(() => {
+  const timerId = setTimeout(() => {
     showLineCall.value = true;
     callState.value = 'incoming';
     playRingtone(); // 着信音を再生
 
     // 3秒後に通知を非表示にする（自動拒否）
-    setTimeout(() => {
+    const autoDeclineTimer = setTimeout(() => {
       if (callState.value === 'incoming') {
         declineCall();
       }
     }, 3000);
+    addTimer(autoDeclineTimer);
   }, randomTime);
+  addTimer(timerId);
 };
 
 // 通話を拒否する関数
@@ -94,40 +110,27 @@ const acceptCall = () => {
   showCallScreen.value = true;
   callState.value = 'connected';
 
-  // 録音内容を再生
+  // 録音内容を再生（onEndedで自動的にendCallが呼ばれる）
   playRecording();
-
-  // 録音終了後に通話終了
-  if (recordingAudio.value) {
-    recordingAudio.value.onended = () => {
-      isPlayingRecording.value = false;
-      endCall();
-    };
-  } else {
-    // 録音ファイルが読み込めない場合のフォールバック
-    setTimeout(() => {
-      endCall();
-    }, 10000);
-  }
 };
 
 // 通話を終了する関数
 const endCall = () => {
   // 録音再生を停止
-  if (recordingAudio.value && isPlayingRecording.value) {
-    recordingAudio.value.pause();
-    recordingAudio.value.currentTime = 0;
-    isPlayingRecording.value = false;
+  if (recordingAudio.value) {
+    removeAudio(recordingAudio.value);
+    recordingAudio.value = null;
   }
 
   showCallScreen.value = false;
   callState.value = 'ended';
 
   // 少し待ってから再度ランダムなタイミングでスケジュール
-  setTimeout(() => {
+  const timerId = setTimeout(() => {
     callState.value = 'idle';
     scheduleLineCall();
   }, 2000);
+  addTimer(timerId);
 };
 
 // スクロールイベントの処理（固定画像のため不要だが、将来の拡張のために残す）
@@ -135,20 +138,29 @@ const handleScroll = () => {
   // 固定画像のため、スクロール処理は不要
 };
 
+// クリーンアップ関数をgame-storeに登録解除する関数
+let unregisterCleanup = null;
+
 // コンポーネントがマウントされた時に開始
 onMounted(() => {
-  initializeAudio();
+  // クリーンアップ関数を登録
+  unregisterCleanup = registerCleanup(() => {
+    clearAllTimers();
+    stopRingtone();
+    if (recordingAudio.value) {
+      removeAudio(recordingAudio.value);
+      recordingAudio.value = null;
+    }
+  });
+
   scheduleLineCall();
 });
 
-// コンポーネントがアンマウントされる時にタイマーと音声をクリア
+// コンポーネントがアンマウントされる時の処理（フォールバック）
 onUnmounted(() => {
-  if (lineCallTimer.value) {
-    clearTimeout(lineCallTimer.value);
-  }
-  stopRingtone();
-  if (recordingAudio.value && isPlayingRecording.value) {
-    recordingAudio.value.pause();
+  // クリーンアップ関数の登録を解除
+  if (unregisterCleanup) {
+    unregisterCleanup();
   }
 });
 </script>

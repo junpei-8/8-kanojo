@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const props = defineProps({
   isAnomaly: {
@@ -116,38 +116,44 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <p class="highlight">もう一度チャンスをください</p>
-  <p class="highlight">本サービスには他にもたくさんの彼女がいます！</p>
+  <div class="container">
+    <p class="highlight">もう一度チャンスをください</p>
+    <p class="highlight">本サービスには他にもたくさんの彼女がいます！</p>
 
-  <div
-    v-if="props.isAnomaly"
-    class="slider-container"
-    :style="{ transform: `translateY(${yOffset}px)` }"
-  >
-    <div class="slider" :style="{ transform: `translateX(${position}px)` }">
-      <img
-        v-for="(img, idx) in [...images, ...images]"
-        :key="idx"
-        :src="img"
-        class="slider-image"
-        alt="画像"
-      />
+    <div
+      v-if="props.isAnomaly"
+      class="slider-container"
+      :style="{ transform: `translateY(${yOffset}px)` }"
+    >
+      <div class="slider" :style="{ transform: `translateX(${position}px)` }">
+        <img
+          v-for="(img, idx) in [...images, ...images]"
+          :key="idx"
+          :src="img"
+          class="slider-image"
+          alt="画像"
+        />
+      </div>
     </div>
-  </div>
-  <div v-else>
-    <div class="slider animation">
-      <img
-        v-for="(img, idx) in [...images, ...images, ...images]"
-        :key="idx"
-        :src="img"
-        class="slider-image"
-        alt="画像"
-      />
+    <div v-else>
+      <div class="slider animation">
+        <img
+          v-for="(img, idx) in [...images, ...images, ...images]"
+          :key="idx"
+          :src="img"
+          class="slider-image"
+          alt="画像"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.container {
+  overflow: hidden;
+  width: 100%;
+}
 .highlight {
   background-color: yellow;
   font-weight: bold;

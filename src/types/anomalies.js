@@ -12,12 +12,6 @@
  */
 export const anomalies = [
   {
-    id: 'text',
-  },
-  {
-    id: 'color',
-  },
-  {
     id: 'adBanner',
   },
   {
