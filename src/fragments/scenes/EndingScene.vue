@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import GirlfriendEndingImage1 from '../../assets/girlfriend/ending-1.png';
 import GirlfriendEndingImage2 from '../../assets/girlfriend/ending-2.png';
+import TalkBox from '../../components/TalkBox.vue';
 
 const TEXTS = [
   `俺はついにしずこと別れることが出来た。\n正直未練がないかと言われると嘘になる。`,
@@ -38,9 +39,9 @@ const next = () => {
       alt=""
       :data-show="currentIndex >= TEXTS.length"
     />
-    <div class="talk-box" v-if="currentText">
+    <TalkBox v-if="currentText">
       {{ currentText }}
-    </div>
+    </TalkBox>
   </div>
 </template>
 
@@ -53,21 +54,6 @@ const next = () => {
   height: 100%;
   background-color: #000;
   z-index: 9999;
-}
-
-.talk-box {
-  position: absolute;
-  bottom: 100px;
-  left: 50%;
-  width: 60%;
-  transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  color: #333;
-  padding: 40px;
-  border-radius: 12px;
-  white-space: pre;
-  text-align: left;
-  max-width: 1000px;
 }
 .photo {
   position: absolute;
