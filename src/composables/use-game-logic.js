@@ -1,5 +1,9 @@
 import { computed } from 'vue';
-import { gameState, resetGame } from '../store/game-store.js';
+import {
+  gameState,
+  resetGame,
+  cleanupCurrentAnomaly,
+} from '../store/game-store.js';
 import { anomalies } from '../types/anomalies.js';
 
 /**
@@ -41,6 +45,18 @@ export function useGameLogic() {
    * 80%の確率で異変を表示し、使用済みでない異変をランダムに選択する
    */
   function startRound() {
+    // 前の異変のクリーンアップを同期的に実行
+    cleanupCurrentAnomaly();
+
+    // 最初のラウンド（0/8）と最終ステージ（8/8）では必ず異変なし
+    if (
+      gameState.value.currentStage === 0 ||
+      gameState.value.currentStage === 7
+    ) {
+      gameState.value.currentAnomaly = null;
+      return;
+    }
+
     // 80%の確率で異変を表示
     const shouldShowAnomaly = Math.random() < 0.8;
 
@@ -93,8 +109,10 @@ export function useGameLogic() {
         startRound();
       }
     } else {
-      // 不正解の場合
+      // 不正解の場合（ゲームオーバー）
+      // ゲーム画面は維持したまま、カウントを0に戻してページトップへ
       resetGame();
+      window.scrollTo(0, 0);
       startRound();
     }
   }
