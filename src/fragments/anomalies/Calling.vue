@@ -1,7 +1,10 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useAudioManager } from '../../composables/use-audio-manager.js';
 import { registerCleanup } from '../../store/game-store.js';
+
+import audioLineCalling from '../../assets/audio/line.mp3';
+import audioSerif from '../../assets/audio/yakusoku.mp3';
 
 // 音声管理
 const { playAudio, removeAudio } = useAudioManager();
@@ -44,7 +47,7 @@ const clearAllTimers = () => {
 // 着信音を再生する関数
 const playRingtone = () => {
   if (!ringtoneAudio.value) {
-    ringtoneAudio.value = playAudio('/audio/line.mp3', {
+    ringtoneAudio.value = playAudio(audioLineCalling, {
       loop: true,
       volume: 0.7,
     });
@@ -62,7 +65,7 @@ const stopRingtone = () => {
 // 録音内容を再生する関数
 const playRecording = () => {
   if (!recordingAudio.value) {
-    recordingAudio.value = playAudio('/audio/yakusoku.mp3', {
+    recordingAudio.value = playAudio(audioSerif, {
       volume: 0.8,
       onEnded: () => {
         recordingAudio.value = null;

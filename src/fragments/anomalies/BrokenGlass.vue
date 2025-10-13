@@ -3,6 +3,9 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { useAudioManager } from '../../composables/use-audio-manager.js';
 import { registerCleanup } from '../../store/game-store.js';
 
+import audioGlassBreaking1 from '../../assets/audio/glass-breaking-1.mp3';
+import audioGlassBreaking2 from '../../assets/audio/glass-breaking-2.mp3';
+
 // 音声管理
 const { playAudio } = useAudioManager();
 
@@ -11,16 +14,12 @@ const audio1Ref = ref(null);
 const audio2Ref = ref(null);
 const timeoutId = ref(null);
 
-// 音声ファイルパス（public フォルダ内に置く）
-const glassBreaking1 = '/audio/glass-breaking-1.mp3'; // 割れる音
-const glassBreaking2 = '/audio/glass-breaking-2.mp3'; // ヒビ音
-
 const triggerBrokenGlass = () => {
   // まずヒビ音を鳴らす
-  audio1Ref.value = playAudio(glassBreaking1, {
+  audio1Ref.value = playAudio(audioGlassBreaking1, {
     onEnded: () => {
       // ヒビ音終了後に割れる音を再生 & 画像表示
-      audio2Ref.value = playAudio(glassBreaking2, {
+      audio2Ref.value = playAudio(audioGlassBreaking2, {
         onEnded: () => {
           // 音が終わったら画像を消す
           showBrokenGlass.value = false;
