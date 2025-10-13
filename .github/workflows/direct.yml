@@ -1,0 +1,42 @@
+name: Deploy pre-built content to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  # 手動実行のトリガー
+  workflow_dispatch:
+
+# デプロイに必要な権限を設定
+permissions:
+  contents: read
+  pages: write # GitHub Pagesへの書き込み権限
+  id-token: write # OIDCのための権限
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        # リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        # 注: `dist`ディレクトリがGitにコミットされていることを確認してください。
+
+      - name: Setup Pages
+        # GitHub Pagesの設定ステップ
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        # コミット済みの dist ディレクトリをデプロイ対象としてアップロード
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 💡 ローカルでビルドされ、コミットされた dist ディレクトリを指定
+          path: "./dist"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        # デプロイの実行
+        uses: actions/deploy-pages@v4
